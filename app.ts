@@ -1,23 +1,30 @@
-import * as dotenv from "dotenv";
 import express, { Application, Request, Response } from "express";
-import testRoutes from "./routes/test";
-
-dotenv.config();
+import bodyParser from "body-parser";
+import cors from "cors";
+import loadEnvVariables from "./utils/envHelper";
+import issueRoutes from "./routes/issue";
+import initializeFirebase from "./lib/firebase/initializeFirebase";
 
 const createServer = (): express.Application => {
   const app: Application = express();
 
+  // initialize environment variables
+  loadEnvVariables();
+  initializeFirebase();
   // Body parsing Middleware
-  app.use(express.json());
-  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json({ limit: "50mb" }));
+  app.use(bodyParser.json());
+  app.use(express.urlencoded({ extended: true, limit: "50mb" }));
+  app.use(cors());
 
-  app.use("/test", testRoutes);
+  //Routes
+  app.use("/issueApis", issueRoutes);
 
   // eslint-disable-next-line no-unused-vars
   app.get("/", async (_req: Request, res: Response): Promise<Response> => {
     return res.status(200).send({
       success: true,
-      message: "The server is running",
+      message: "The IGM service is running",
     });
   });
 
