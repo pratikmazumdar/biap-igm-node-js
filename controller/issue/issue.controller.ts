@@ -1,6 +1,5 @@
-import { Response, Request, NextFunction } from "express";
+import { Response, NextFunction } from "express";
 import IssueService from "./issue.service";
-import { logger } from "../../shared/logger";
 
 const issueService = new IssueService();
 class IssueController {
@@ -11,16 +10,42 @@ class IssueController {
    * @param {*} next   Callback argument to the middleware function
    */
 
-  createIssue(req: Request, res: Response, next: NextFunction) {
-    const { body: request } = req;
-    logger.info(request);
-
+  createIssue(req: any, res: Response, next: NextFunction) {
+    const { body: request, user: userDetails } = req;
+    console.log("userDetails", userDetails);
     issueService
-      .selectMultipleOrder(request)
+      .createIssue(request, userDetails)
       .then((response) => {
         res.json(response);
       })
       .catch((err) => {
+        next(err);
+      });
+  }
+
+  /**
+   * get issues list
+   * @param {*} req    HTTP request object
+   * @param {*} res    HTTP response object
+   * @param {*} next   Callback argument to the middleware function
+   */
+  getIssuesList(req: any, res: Response, next: NextFunction) {
+    const { query = {}, user } = req;
+    console.log("user", user);
+
+    issueService
+      . getIssuesList(user, query)
+      .then((response: any) => {
+        if (!response.error) {
+          res.json({ ...response });
+        } else
+          res.status(404).json({
+            totalCount: 0,
+            issues: [],
+            error: response.error,
+          });
+      })
+      .catch((err: any) => {
         next(err);
       });
   }

@@ -8,6 +8,7 @@ const app = createServer();
 
 try {
   //Setup connection to the database
+
   dbConnect()
     .then(() => {
       logger.info("Database connection successful");

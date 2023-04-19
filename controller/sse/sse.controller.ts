@@ -45,6 +45,26 @@ class SseController {
         next(err);
       });
   }
+
+  /**
+   * on issue_status
+   * @param {*} req    HTTP request object
+   * @param {*} res    HTTP response object
+   * @param {*} next   Callback argument to the middleware function
+
+   */
+  onStatus(req: Request, res: Response, next: NextFunction) {
+    const { body: response } = req;
+
+    sseProtocolService
+      .onIssueStatus(response)
+      .then((result) => {
+        res.json(result);
+      })
+      .catch((err) => {
+        next(err);
+      });
+  }
 }
 
 export default SseController;

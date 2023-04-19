@@ -6,6 +6,8 @@ const router = express.Router();
 const sseController = new SseController();
 
 router.get("/events", authentication(), sseController.onEvent);
+
 router.post("/response/on_issue", sseController.onIssue);
+router.post("/response/on_issue_status", sseController.onIssue);
 
 export default router;
