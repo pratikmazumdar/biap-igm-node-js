@@ -36,6 +36,7 @@ const IssueSchema = new mongoose.Schema(
     orderId: { type: String },
     created_at: { type: String },
     updated_at: { type: String },
+    issueId: { type: String },
   },
   { _id: true, timestamps: false }
 );

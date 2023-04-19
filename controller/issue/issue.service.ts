@@ -1,10 +1,11 @@
+import fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 import { PROTOCOL_CONTEXT } from "../../shared/constants";
 import ContextFactory from "../../utils/contextFactory";
 import BppIssueService from "./bpp.issue.service";
 import Issue from "../../database/issue.model";
 import { logger } from "../../shared/logger";
 import HttpRequest from "../../utils/httpRequest";
-import fs from "fs";
 
 const bppIssueService = new BppIssueService();
 
@@ -27,7 +28,6 @@ class IssueService {
       fs.writeFileSync("./images/" + fileName, imageBuffer, "utf8");
       return fileName;
     } catch (err) {
-      console.log("bppIssueService", bppIssueService);
       return err;
     }
   }
@@ -41,7 +41,7 @@ class IssueService {
 
   async createIssueInBugzilla(issue: any) {
     try {
-      console.log("issue", issue);
+      console.log(issue);
       const data = {
         product: "sahil",
         component: "sahil",
@@ -87,10 +87,6 @@ class IssueService {
         city: requestContext?.city,
         state: requestContext?.state,
       });
-      console.log(
-        "🚀 ~ file: issue.service.ts:89 ~ IssueService ~ createIssue ~ context:",
-        context
-      );
       const imageUri: any = [];
 
       await issue?.description?.images?.map(async (item: any) => {
@@ -105,15 +101,19 @@ class IssueService {
         issue?.description?.images.length,
         ...imageUri
       );
-
-      // const bppResponse = await bppIssueService.issue(context, issue);
+      const issueId = uuidv4();
+      const issueRequests: any = { ...issue, issueId: issueId };
+      const bppResponse = await bppIssueService.issue(context, issue);
 
       // if (process.env.BUGZILLA_API_KEY) {
       //   this.createIssueInBugzilla(issue);
       // }
-      await this.createIssueInDatabase(issue, userDetails?.decodedToken?.uid);
+      await this.createIssueInDatabase(
+        issueRequests,
+        userDetails?.decodedToken?.uid
+      );
       logger.info("Created issue in database");
-      // return bppResponse;
+      return bppResponse;
     } catch (err) {
       throw err;
     }

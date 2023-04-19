@@ -12,7 +12,7 @@ class IssueController {
 
   createIssue(req: any, res: Response, next: NextFunction) {
     const { body: request, user: userDetails } = req;
-    console.log("userDetails", userDetails);
+
     issueService
       .createIssue(request, userDetails)
       .then((response) => {
@@ -31,10 +31,9 @@ class IssueController {
    */
   getIssuesList(req: any, res: Response, next: NextFunction) {
     const { query = {}, user } = req;
-    console.log("user", user);
 
     issueService
-      . getIssuesList(user, query)
+      .getIssuesList(user, query)
       .then((response: any) => {
         if (!response.error) {
           res.json({ ...response });

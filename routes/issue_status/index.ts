@@ -1,11 +1,15 @@
 import express from "express";
 import { authentication } from "../../middleware";
-import IssueController from "../../controller/issue/issue.controller";
+import IssueStatusController from "../../controller/issue_status/issue_status.controller";
 
 const router = express.Router();
 
-const issueController = new IssueController();
-router.post("/v1/issue", authentication(), issueController.createIssue);
-router.get("/v1/getIssues", authentication(), issueController.getIssuesList);
+const issueStatusController = new IssueStatusController();
+
+router.post(
+  "/v1/issue_status",
+  authentication(),
+  issueStatusController.issueStatus
+);
 
 export default router;

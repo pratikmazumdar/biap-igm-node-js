@@ -12,7 +12,6 @@ class IssueStatusController {
    */
   issueStatus(req: Request, res: Response, next: NextFunction) {
     const { body: issue } = req;
-
     issueStatusService
       .issue_status(issue)
       .then((response) => {

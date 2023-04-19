@@ -18,7 +18,7 @@ try {
       });
     })
     .catch((error: any) => {
-      console.log("Error connecting to the database", error);
+      logger.info("Error connecting to the database", error);
       return;
     });
 } catch (error) {

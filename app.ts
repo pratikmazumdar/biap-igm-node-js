@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import cors from "cors";
 import loadEnvVariables from "./utils/envHelper";
 import issueRoutes from "./routes/issue";
+import issue_statusRoutes from "./routes/issue_status";
 import initializeFirebase from "./lib/firebase/initializeFirebase";
 
 const createServer = (): express.Application => {
@@ -19,6 +20,7 @@ const createServer = (): express.Application => {
 
   //Routes
   app.use("/issueApis", issueRoutes);
+  app.use("/issueApis", issue_statusRoutes);
 
   app.use(express.static("images"));
   app.use("/uploads", express.static("images"));

@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
 import { protocolIssue } from "../../utils/protocolApis";
 import { PROTOCOL_CONTEXT } from "../../shared/constants";
 class BppIssueService {
@@ -16,7 +15,7 @@ class BppIssueService {
         context: context,
         message: {
           issue: {
-            id: uuidv4(),
+            id: issue?.id,
             category: issue?.category,
             sub_category: issue?.sub_category,
             complainant_info: issue?.complainant_info,
@@ -63,7 +62,6 @@ class BppIssueService {
       };
 
       const response: any = await protocolIssue(issueRequest);
-      console.log("response", response);
       return { context: context, message: response?.message };
     } catch (err) {
       throw err;
