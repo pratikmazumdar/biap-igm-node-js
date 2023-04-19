@@ -1,1 +1,1 @@
-# Bugzilla Service
+# IGM Node service

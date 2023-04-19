@@ -1,12 +1,13 @@
 import { protocolIssue } from "../../utils/protocolApis";
 import { PROTOCOL_CONTEXT } from "../../shared/constants";
+import { Fulfillment, IssueProps, Item } from "../../interfaces/issue";
 class BppIssueService {
   /**
    * bpp issue
    * @param {Object} context
    * @param {Object} issue
    */
-  async issue(context: object, issue: any = {}) {
+  async issue(context: object, issue: IssueProps) {
     try {
       const { issue_actions, order_details, description } = issue;
 
@@ -23,17 +24,19 @@ class BppIssueService {
               id: order_details?.id,
               state: order_details?.state,
               items:
-                order_details?.items.map((item: any) => {
+                order_details?.items.map((item: Item) => {
                   return {
                     id: item?.id?.toString(),
                   };
                 }) || [],
-              fulfillments: order_details?.fulfillments.map((item: any) => {
-                return {
-                  id: item?.id?.toString(),
-                  state: "Order-delivered",
-                };
-              }),
+              fulfillments: order_details?.fulfillments.map(
+                (item: Fulfillment) => {
+                  return {
+                    id: item?.id?.toString(),
+                    state: "Order-delivered",
+                  };
+                }
+              ),
               provider_id: order_details?.provider_id,
             },
             description: {

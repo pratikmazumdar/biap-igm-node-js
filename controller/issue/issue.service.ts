@@ -6,14 +6,26 @@ import BppIssueService from "./bpp.issue.service";
 import Issue from "../../database/issue.model";
 import { logger } from "../../shared/logger";
 import HttpRequest from "../../utils/httpRequest";
+import {
+  IParamProps,
+  IResponseProps,
+  IssueProps,
+  IssueRequest,
+  UserDetails,
+} from "../../interfaces/issue";
 
 const bppIssueService = new BppIssueService();
 
 class IssueService {
   async uploadImage(base64: string) {
     try {
-      let matches: any = base64.match(/^data:([A-Za-z-+/]+);base64,(.+)$/),
-        response: any = {};
+      let matches: string[] | any = base64.match(
+          /^data:([A-Za-z-+/]+);base64,(.+)$/
+        ),
+        response: IResponseProps = {
+          type: "",
+          data: new Buffer(matches[1], "base64"),
+        };
 
       if (matches.length !== 3) {
         throw new Error("Invalid input string");
@@ -32,14 +44,14 @@ class IssueService {
     }
   }
 
-  async createIssueInDatabase(issue: any, uid: string) {
+  async createIssueInDatabase(issue: IssueProps, uid: string) {
     if (issue && uid) {
       const issueData = { ...issue, userId: uid };
       await Issue.create(issueData);
     }
   }
 
-  async createIssueInBugzilla(issue: any) {
+  async createIssueInBugzilla(issue: IssueProps) {
     try {
       console.log(issue);
       const data = {
@@ -72,11 +84,11 @@ class IssueService {
    * Issue
    * @param {Object} issueRequest
    */
-  async createIssue(issueRequest: any, userDetails: any) {
+  async createIssue(issueRequest: IssueRequest, userDetails: UserDetails) {
     try {
-      const { context: requestContext, message = {} } = issueRequest || {};
+      const { context: requestContext, message }: IssueRequest = issueRequest;
 
-      const { issue = {} } = message;
+      const issue: IssueProps = message.issue;
 
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
@@ -87,13 +99,12 @@ class IssueService {
         city: requestContext?.city,
         state: requestContext?.state,
       });
-      const imageUri: any = [];
+      const imageUri: string[] = [];
 
-      await issue?.description?.images?.map(async (item: any) => {
+      await issue?.description?.images?.map(async (item: string) => {
         const images = await this.uploadImage(item);
         const imageLink = "http://localhost:6969/uploads/" + images;
-
-        await imageUri.push(imageLink);
+        imageUri.push(imageLink);
       });
 
       issue?.description?.images.splice(
@@ -102,7 +113,7 @@ class IssueService {
         ...imageUri
       );
       const issueId = uuidv4();
-      const issueRequests: any = { ...issue, issueId: issueId };
+      const issueRequests: IssueProps = { ...issue, issueId: issueId };
       const bppResponse = await bppIssueService.issue(context, issue);
 
       // if (process.env.BUGZILLA_API_KEY) {
@@ -119,11 +130,10 @@ class IssueService {
     }
   }
 
-  async findIssues(user: any, params: any) {
+  async findIssues(user: UserDetails, params: IParamProps) {
     try {
       let { limit = 10, pageNumber = 1 } = params;
 
-      limit = parseInt(limit);
       let skip = (pageNumber - 1) * limit;
 
       const issues = await Issue.find({ userId: user.decodedToken.uid })
@@ -145,7 +155,7 @@ class IssueService {
    * @param {Object} user
    */
 
-  async getIssuesList(user: any, params: object = {}) {
+  async getIssuesList(user: UserDetails, params: IParamProps) {
     try {
       const { issues, totalCount } = await this.findIssues(user, params);
       if (!issues.length) {
