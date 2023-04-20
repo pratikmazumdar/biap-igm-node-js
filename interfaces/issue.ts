@@ -38,6 +38,7 @@ export interface ComplainantInfoContact {
 }
 
 export interface Person {
+  email?: string ;
   name: string;
 }
 
@@ -72,7 +73,7 @@ export interface UpdatedBy {
 
 export interface UpdatedByContact {
   phone: string;
-  email: string;
+  email?: string;
 }
 
 export interface OrderDetails {

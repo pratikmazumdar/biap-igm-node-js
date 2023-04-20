@@ -5,7 +5,7 @@ import ContextFactory from "../../utils/contextFactory";
 import BppIssueService from "./bpp.issue.service";
 import Issue from "../../database/issue.model";
 import { logger } from "../../shared/logger";
-import HttpRequest from "../../utils/httpRequest";
+
 import {
   IParamProps,
   IResponseProps,
@@ -13,8 +13,10 @@ import {
   IssueRequest,
   UserDetails,
 } from "../../interfaces/issue";
+import BugzillaService from "../../controller/bugzilla/bugzilla.service";
 
 const bppIssueService = new BppIssueService();
+const bugzillaService = new BugzillaService();
 
 class IssueService {
   async uploadImage(base64: string) {
@@ -51,33 +53,34 @@ class IssueService {
     }
   }
 
-  async createIssueInBugzilla(issue: IssueProps) {
-    try {
-      console.log(issue);
-      const data = {
-        product: "sahil",
-        component: "sahil",
-        version: "unspecified",
-        summary: "'This is a test bug - please disregard",
-        alias: "SomeAlias",
-        op_sys: "All",
-        rep_platform: "All",
-      };
-      const apiCall = new HttpRequest(
-        "http://192.168.10.46:8000",
-        "/create",
-        "POST",
-        {
-          ...data,
-        }
-      );
-      const result = await apiCall.send();
-      if (result.status === 201) {
-        logger.info("Created issue in Bugzilla");
-      }
-    } catch (error) {
-      logger.info("Error in creating issue in Bugzilla ", error);
-    }
+  async addComplainantAction(issue: IssueProps) {
+    const date = new Date();
+    const initialComplainantAction = {
+      complainant_action: "OPEN",
+      remarks: "Complaint created",
+      updated_at: date,
+      updated_by: {
+        org: {
+          name: process.env.BAP_ID + "::" + process.env.DOMAIN,
+        },
+        contact: {
+          phone: issue?.complainant_info?.contact?.phone,
+          email: issue?.complainant_info?.person?.email,
+        },
+        person: {
+          name: issue?.complainant_info?.person?.name,
+        },
+      },
+    };
+    issue?.issue_actions?.complainant_actions.push(initialComplainantAction);
+
+    const issueId = uuidv4();
+    const issueRequests: IssueProps = {
+      ...issue,
+      issueId: issueId,
+    };
+
+    return issueRequests;
   }
 
   /**
@@ -112,13 +115,14 @@ class IssueService {
         issue?.description?.images.length,
         ...imageUri
       );
-      const issueId = uuidv4();
-      const issueRequests: IssueProps = { ...issue, issueId: issueId };
-      const bppResponse = await bppIssueService.issue(context, issue);
 
-      // if (process.env.BUGZILLA_API_KEY) {
-      //   this.createIssueInBugzilla(issue);
-      // }
+      const issueRequests = await this.addComplainantAction(issue);
+
+      if (process.env.BUGZILLA_API_KEY) {
+        bugzillaService.createIssueInBugzilla(issueRequests);
+      }
+      const bppResponse = await bppIssueService.issue(context, issueRequests);
+
       await this.createIssueInDatabase(
         issueRequests,
         userDetails?.decodedToken?.uid

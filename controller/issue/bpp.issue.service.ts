@@ -11,12 +11,11 @@ class BppIssueService {
     try {
       const { issue_actions, order_details, description } = issue;
 
-      const date = new Date();
       const issueRequest = {
         context: context,
         message: {
           issue: {
-            id: issue?.id,
+            id: issue?.issueId,
             category: issue?.category,
             sub_category: issue?.sub_category,
             complainant_info: issue?.complainant_info,
@@ -27,6 +26,7 @@ class BppIssueService {
                 order_details?.items.map((item: Item) => {
                   return {
                     id: item?.id?.toString(),
+                    quantity: item?.quantity?.count,
                   };
                 }) || [],
               fulfillments: order_details?.fulfillments.map(
@@ -58,8 +58,8 @@ class BppIssueService {
             status: "OPEN",
             issue_type: PROTOCOL_CONTEXT?.ISSUE.toUpperCase(),
             issue_actions: issue_actions,
-            created_at: date,
-            updated_at: date,
+            created_at: issue?.created_at,
+            updated_at: issue?.updated_at,
           },
         },
       };
