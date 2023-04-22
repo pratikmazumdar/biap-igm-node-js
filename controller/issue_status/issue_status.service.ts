@@ -1,3 +1,4 @@
+import { onIssue_status } from "../../utils/protocolApis";
 import Issue from "../../database/issue.model";
 import { PROTOCOL_CONTEXT } from "../../shared/constants";
 import ContextFactory from "../../utils/contextFactory";
@@ -40,6 +41,34 @@ class IssueStatusService {
       });
 
       return await bppIssueStatusService.getIssueStatus(context, message);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * on support order
+   * @param {Object} messageId
+   */
+  async onIssueStatus(messageId: Object) {
+    try {
+      const protocolSupportResponse = await onIssue_status(messageId);
+      if (protocolSupportResponse && protocolSupportResponse.length)
+        return protocolSupportResponse?.[0];
+      else {
+        const contextFactory = new ContextFactory();
+        const context = contextFactory.create({
+          messageId: messageId,
+          action: PROTOCOL_CONTEXT.ON_ISSUE_STATUS,
+        });
+
+        return {
+          context,
+          error: {
+            message: "No data found",
+          },
+        };
+      }
     } catch (err) {
       throw err;
     }

@@ -1,5 +1,5 @@
 import _ from "lodash";
-import SseEvent from "./sseEvent.service.js";
+import SseEvent from "./sseEvent.service";
 
 class ConfigureSSE {
   req: any;

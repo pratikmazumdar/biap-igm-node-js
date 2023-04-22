@@ -14,11 +14,27 @@ import {
   UserDetails,
 } from "../../interfaces/issue";
 import BugzillaService from "../../controller/bugzilla/bugzilla.service";
+import { onIssueOrder } from "../../utils/protocolApis";
 
 const bppIssueService = new BppIssueService();
 const bugzillaService = new BugzillaService();
 
 class IssueService {
+  /**
+   *
+   * @param {Object} response
+   * @returns
+   */
+  transform(response: { context: any; message: { issue: any } }) {
+    return {
+      context: response?.context,
+      message: {
+        issue: {
+          ...response?.message?.issue,
+        },
+      },
+    };
+  }
   async uploadImage(base64: string) {
     try {
       let matches: string[] | any = base64.match(
@@ -174,6 +190,38 @@ class IssueService {
           totalCount: totalCount,
           issues: [...issues],
         };
+      }
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  /**
+   * on issue order
+   * @param {Object} messageId
+   */
+  async onIssueOrder(messageId: string) {
+    try {
+      const protocolSelectResponse = await onIssueOrder(messageId);
+
+      if (
+        !(protocolSelectResponse && protocolSelectResponse.length) ||
+        protocolSelectResponse?.[0]?.error
+      ) {
+        const contextFactory = new ContextFactory();
+        const context = contextFactory.create({
+          messageId: messageId,
+          action: PROTOCOL_CONTEXT.ON_ISSUE,
+        });
+
+        return {
+          context,
+          error: {
+            message: "No data found",
+          },
+        };
+      } else {
+        return this.transform(protocolSelectResponse?.[0]);
       }
     } catch (err) {
       throw err;

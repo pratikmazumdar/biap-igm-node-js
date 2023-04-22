@@ -48,6 +48,26 @@ class IssueController {
         next(err);
       });
   }
+
+  /**
+   * on issue
+   * @param {*} req    HTTP request object
+   * @param {*} res    HTTP response object
+   * @param {*} next   Callback argument to the middleware function
+   */
+  onIssue(req: any, res: Response, next: NextFunction) {
+    const { query } = req;
+    const { messageId } = query;
+
+    issueService
+      .onIssueOrder(messageId)
+      .then((order: any) => {
+        res.json(order);
+      })
+      .catch((err: any) => {
+        next(err);
+      });
+  }
 }
 
 export default IssueController;

@@ -11,5 +11,10 @@ router.post(
   authentication(),
   issueStatusController.issueStatus
 );
+router.get(
+  "/v1/on_issue_status",
+  authentication(),
+  issueStatusController.onIssue_status
+);
 
 export default router;
