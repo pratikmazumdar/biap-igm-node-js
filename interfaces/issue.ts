@@ -38,7 +38,7 @@ export interface ComplainantInfoContact {
 }
 
 export interface Person {
-  email?: string ;
+  email?: string;
   name: string;
 }
 
@@ -56,6 +56,18 @@ export interface AdditionalDesc {
 
 export interface IssueActions {
   complainant_actions: ComplainantAction[];
+  respondent_actions: RespondentActions[];
+}
+export interface RespondentActions {
+  respondent_action: string;
+  remarks: string;
+  updated_at: Date;
+  updated_by: UpdatedBy;
+  cascaded_level: number;
+}
+
+export interface Org {
+  name: string;
 }
 
 export interface ComplainantAction {
@@ -225,4 +237,33 @@ export interface IResponseProps {
 export interface IParamProps {
   limit: number;
   pageNumber: number;
+}
+
+export interface BppResponse {
+  context: Context;
+  message: any;
+}
+
+export interface Context {
+  domain: string;
+  country: string;
+  city: string;
+  action: string;
+  core_version: string;
+  bap_id: string;
+  bap_uri: string;
+  bpp_uri: string;
+  transaction_id: string;
+  message_id: string;
+  timestamp: Date;
+  bpp_id: string;
+  ttl: string;
+}
+
+export interface Message {
+  ack: ACK;
+}
+
+export interface ACK {
+  status: string;
 }

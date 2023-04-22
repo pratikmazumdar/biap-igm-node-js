@@ -61,8 +61,8 @@ class IssueController {
 
     issueService
       .onIssueOrder(messageId)
-      .then((order: any) => {
-        res.json(order);
+      .then((issue: any) => {
+        res.json(issue);
       })
       .catch((err: any) => {
         next(err);

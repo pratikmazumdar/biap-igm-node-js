@@ -15,6 +15,10 @@ import {
 } from "../../interfaces/issue";
 import BugzillaService from "../../controller/bugzilla/bugzilla.service";
 import { onIssueOrder } from "../../utils/protocolApis";
+import {
+  addOrUpdateIssueWithtransactionId,
+  getIssueByTransactionId,
+} from "../../utils/dbservice";
 
 const bppIssueService = new BppIssueService();
 const bugzillaService = new BugzillaService();
@@ -62,11 +66,19 @@ class IssueService {
     }
   }
 
-  async createIssueInDatabase(issue: IssueProps, uid: string) {
-    if (issue && uid) {
-      const issueData = { ...issue, userId: uid };
-      await Issue.create(issueData);
-    }
+  async createIssueInDatabase(
+    issue: IssueProps,
+    uid: string,
+    message_id: string,
+    transaction_id: string
+  ) {
+    const issueReq = {
+      ...issue,
+      userId: uid,
+      message_id: message_id,
+      transaction_id: transaction_id,
+    };
+    await addOrUpdateIssueWithtransactionId(issue?.issueId, issueReq);
   }
 
   async addComplainantAction(issue: IssueProps) {
@@ -137,13 +149,20 @@ class IssueService {
       if (process.env.BUGZILLA_API_KEY) {
         bugzillaService.createIssueInBugzilla(issueRequests);
       }
-      const bppResponse = await bppIssueService.issue(context, issueRequests);
-
-      await this.createIssueInDatabase(
-        issueRequests,
-        userDetails?.decodedToken?.uid
+      const bppResponse: any = await bppIssueService.issue(
+        context,
+        issueRequests
       );
-      logger.info("Created issue in database");
+
+      if (bppResponse?.context) {
+        await this.createIssueInDatabase(
+          issueRequests,
+          userDetails?.decodedToken?.uid,
+          bppResponse?.context?.message_id,
+          bppResponse?.context?.transaction_id
+        );
+        logger.info("Created issue in database");
+      }
       return bppResponse;
     } catch (err) {
       throw err;
@@ -202,11 +221,11 @@ class IssueService {
    */
   async onIssueOrder(messageId: string) {
     try {
-      const protocolSelectResponse = await onIssueOrder(messageId);
+      const protocolIssueResponse = await onIssueOrder(messageId);
 
       if (
-        !(protocolSelectResponse && protocolSelectResponse.length) ||
-        protocolSelectResponse?.[0]?.error
+        !(protocolIssueResponse && protocolIssueResponse.length) ||
+        protocolIssueResponse?.[0]?.error
       ) {
         const contextFactory = new ContextFactory();
         const context = contextFactory.create({
@@ -221,7 +240,25 @@ class IssueService {
           },
         };
       } else {
-        return this.transform(protocolSelectResponse?.[0]);
+        const respondent_actions =
+          protocolIssueResponse?.[0]?.message?.issue?.issue_actions
+            ?.respondent_actions;
+
+        const issue: IssueProps = await getIssueByTransactionId(
+          protocolIssueResponse?.[0]?.context?.transaction_id
+        );
+
+        issue?.issue_actions?.respondent_actions.splice(
+          0,
+          issue?.issue_actions?.respondent_actions.length,
+          ...respondent_actions
+        );
+
+        addOrUpdateIssueWithtransactionId(
+          protocolIssueResponse?.[0]?.context?.transaction_id,
+          issue
+        );
+        return this.transform(protocolIssueResponse?.[0]);
       }
     } catch (err) {
       throw err;

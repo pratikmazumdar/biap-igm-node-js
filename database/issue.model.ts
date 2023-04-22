@@ -25,6 +25,8 @@ const complaintInfoSchema = new mongoose.Schema(
 const IssueSchema = new mongoose.Schema(
   {
     userId: { type: String },
+    transaction_id: { type: String },
+    message_id: { type: String },
     category: { type: String },
     sub_category: { type: String },
     bppId: String,
