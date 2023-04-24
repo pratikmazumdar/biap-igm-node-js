@@ -138,7 +138,7 @@ class IssueService {
         imageUri.push(imageLink);
       });
 
-      issue?.description?.images.splice(
+      issue?.description?.images?.splice(
         0,
         issue?.description?.images.length,
         ...imageUri
@@ -248,7 +248,7 @@ class IssueService {
           protocolIssueResponse?.[0]?.context?.transaction_id
         );
 
-        issue?.issue_actions?.respondent_actions.splice(
+        issue?.issue_actions?.respondent_actions?.splice(
           0,
           issue?.issue_actions?.respondent_actions.length,
           ...respondent_actions

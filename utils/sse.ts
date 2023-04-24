@@ -2,6 +2,7 @@ const SSE_CONNECTIONS: any = {};
 const SSE_TIMEOUT: any = process.env.SSE_TIMEOUT;
 
 function addSSEConnection(messageId: string, sse: object) {
+  console.log("Adding SSE Connection");
   SSE_CONNECTIONS[messageId] = sse;
 }
 
