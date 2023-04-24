@@ -7,8 +7,11 @@ function addSSEConnection(messageId: string, sse: object) {
 }
 
 function sendSSEResponse(messageId: string, action: any, response: any) {
+  console.log("HERE", SSE_CONNECTIONS, messageId, SSE_TIMEOUT);
   if (!SSE_CONNECTIONS?.[messageId]) {
     setTimeout(() => {
+      console.log("Timeout ran", SSE_CONNECTIONS);
+      // console.log(SSE_CONNECTIONS)
       SSE_CONNECTIONS?.[messageId]?.send(response, action, messageId);
     }, SSE_TIMEOUT);
   } else {

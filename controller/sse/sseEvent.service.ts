@@ -117,7 +117,8 @@ class SseEvent extends EventEmitter {
     this.initial = [];
   }
 
-  send(data: any, id?: any, event?: any) {
+  send(data: any, event?: any, id?: any) {
+    console.log("emitting", data, event, id);
     this.emit("data", { data, event, id });
   }
 
