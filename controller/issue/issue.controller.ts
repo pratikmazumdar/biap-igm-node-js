@@ -56,7 +56,7 @@ class IssueController {
    * @param {*} next   Callback argument to the middleware function
    */
   getIssue(req: any, res: Response, next: NextFunction) {
-    const { query = {}, user } = req;
+    const { query = {} } = req;
 
     issueService
       .getSingleIssue(query?.transactionId)
