@@ -17,8 +17,6 @@ class SseController {
       const { query = {} } = req;
       const { messageId }: any = query;
 
-      console.log("Starting", messageId, query);
-
       if (messageId && messageId.length) {
         const configureSse = new ConfigureSse(req, res, messageId);
         const initSSE = configureSse.initialize();

@@ -59,8 +59,6 @@ class IssueController {
     const { query } = req;
     const { messageId } = query;
 
-    console.log("Getting hit", query);
-
     issueService
       .onIssueOrder(messageId)
       .then((issue: any) => {
