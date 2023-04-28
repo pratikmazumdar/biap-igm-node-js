@@ -1,0 +1,31 @@
+version: "3"
+services:
+  backend:
+    container_name: biap-igm-node
+    build: .
+    environment:
+      NODE_ENV: development
+      DB_CONNECTION_STRING: ${DB_CONNECTION_STRING}
+      PROTOCOL_BASE_URL: ${PROTOCOL_BASE_URL}
+      SSE_TIMEOUT: ${SSE_TIMEOUT}
+      DOMAIN: ${DOMAIN}
+      COUNTRY: ${COUNTRY}
+      BAP_ID: ${BAP_ID}
+      EXPECTED_RESPONSE_TIME: ${EXPECTED_RESPONSE_TIME}
+      EXPECTED_RESOLUTION_TIME: ${EXPECTED_RESOLUTION_TIME}
+      BUGZILLA_API_KEY: ${BUGZILLA_API_KEY}
+      BAP_URL: ${BAP_URL}
+    ports:
+      - "8989:6969"
+    expose:
+      - 8989
+    depends_on:
+      - mongo
+    volumes:
+      - "./images:/app/images"
+    restart: always
+  mongo:
+    image: mongo
+    restart: always
+    ports:
+      - 27022:27017

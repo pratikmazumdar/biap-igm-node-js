@@ -1,1 +1,1 @@
-# biap-igm-node-js
+# IGM Node service
