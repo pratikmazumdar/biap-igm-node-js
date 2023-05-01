@@ -267,15 +267,20 @@ class IssueService {
 
   /**
    * get issue by transaction id
-   * @param {Object} messageId
+   * @param {Object} transactionId
    */
   async getSingleIssue(transactionId: string) {
     try {
-      if (!transactionId) throw new Error("Transaction ID not found");
+      if (!transactionId)
+        throw new Error("Issue not found with this transaction Id");
 
       const issue: IssueProps = await getIssueByTransactionId(transactionId);
 
-      return issue;
+      if (issue) {
+        return { issueExistance: true, issue };
+      } else {
+        return { issueExistance: false };
+      }
     } catch (err: any) {
       throw err;
     }
