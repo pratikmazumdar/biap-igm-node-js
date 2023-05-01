@@ -55,7 +55,7 @@ class BppIssueService {
             expected_resolution_time: {
               duration: process.env.EXPECTED_RESOLUTION_TIME,
             },
-            status: "OPEN",
+            status: issue?.status || "OPEN",
             issue_type: PROTOCOL_CONTEXT?.ISSUE.toUpperCase(),
             issue_actions: issue_actions,
             created_at: issue?.created_at,
@@ -64,6 +64,31 @@ class BppIssueService {
         },
       };
 
+      const response: any = await protocolIssue(issueRequest);
+      return { context: context, message: response?.message };
+    } catch (err) {
+      throw err;
+    }
+  }
+  async closeOrEscalateIssue(context: object, issue: IssueProps) {
+    try {
+      const { issue_actions } = issue;
+
+      const issueRequest = {
+        context: context,
+        message: {
+          issue: {
+            id: issue?.id,
+            status: issue?.status,
+            issue_actions: issue_actions,
+            rating: issue.rating,
+            created_at: issue?.created_at,
+            updated_at: issue?.updated_at,
+          },
+        },
+      };
+
+      console.log(JSON.stringify(issueRequest));
       const response: any = await protocolIssue(issueRequest);
       return { context: context, message: response?.message };
     } catch (err) {

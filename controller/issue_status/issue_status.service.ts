@@ -3,6 +3,11 @@ import Issue from "../../database/issue.model";
 import { PROTOCOL_CONTEXT } from "../../shared/constants";
 import ContextFactory from "../../utils/contextFactory";
 import BppIssueStatusService from "./bpp.issue_status.service";
+import {
+  addOrUpdateIssueWithtransactionId,
+  getIssueByTransactionId,
+} from "../../utils/dbservice";
+import { IssueProps, RespondentActions } from "../../interfaces/issue";
 
 const bppIssueStatusService = new BppIssueStatusService();
 
@@ -34,7 +39,7 @@ class IssueStatusService {
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
         action: PROTOCOL_CONTEXT.ISSUE_STATUS,
-        transactionId: issueDetails?.transactionId,
+        transactionId: requestContext?.transaction_id,
         bppId: requestContext?.bpp_id,
         bpp_uri: issueDetails?.bpp_uri,
         cityCode: issueDetails.city,
@@ -53,9 +58,37 @@ class IssueStatusService {
   async onIssueStatus(messageId: Object) {
     try {
       const protocolSupportResponse = await onIssue_status(messageId);
-      if (protocolSupportResponse && protocolSupportResponse.length)
+      if (protocolSupportResponse && protocolSupportResponse.length) {
+        const respondent_actions =
+          protocolSupportResponse?.[0]?.message?.issue?.issue_actions
+            ?.respondent_actions;
+
+        const issue: IssueProps = await getIssueByTransactionId(
+          protocolSupportResponse?.[0]?.context?.transaction_id
+        );
+        respondent_actions?.map((item: RespondentActions) => {
+          if (item?.respondent_action === "RESOLVED") {
+            issue["issue_status"] = "Close";
+          }
+        });
+
+        issue?.issue_actions?.respondent_actions?.splice(
+          0,
+          issue?.issue_actions?.respondent_actions.length,
+          ...respondent_actions
+        );
+
+        issue["resolution_provider"] =
+          protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;
+        issue["resolution"] =
+          protocolSupportResponse?.[0]?.message?.issue?.resolution;
+
+        await addOrUpdateIssueWithtransactionId(
+          protocolSupportResponse?.[0]?.context?.transaction_id,
+          issue
+        );
         return protocolSupportResponse?.[0];
-      else {
+      } else {
         const contextFactory = new ContextFactory();
         const context = contextFactory.create({
           messageId: messageId,

@@ -35,10 +35,13 @@ const IssueSchema = new mongoose.Schema(
     order_details: { type: Object },
     description: { type: Object },
     issue_actions: { type: Object },
+    resolution: { type: Object, default: {} },
+    resolution_provider: { type: Object, default: {} },
     orderId: { type: String },
     created_at: { type: String },
     updated_at: { type: String },
     issueId: { type: String },
+    issue_status: { type: String, default: "Open" },
   },
   { _id: true, timestamps: false }
 );

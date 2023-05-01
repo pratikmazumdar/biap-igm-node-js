@@ -79,7 +79,7 @@ class ContextFactory {
       message_id: messageId,
       timestamp: this.timestamp,
       ...(bppId && { bpp_id: bppId }),
-      ttl: "PT2H",
+      ttl: "PT30S",
     };
   }
 }

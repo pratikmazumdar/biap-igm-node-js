@@ -26,6 +26,12 @@ export interface IssueProps {
   updated_at: Date;
   issueId?: string;
   id?: string;
+  issue_status: string;
+  resolution: Object;
+  resolution_provider: Object;
+  status: string;
+  rating?: string;
+  issue_type?: string;
 }
 
 export interface ComplainantInfo {

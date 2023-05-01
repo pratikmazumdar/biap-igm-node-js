@@ -92,15 +92,17 @@ class IssueService {
           name: process.env.BAP_ID + "::" + process.env.DOMAIN,
         },
         contact: {
-          phone: issue?.complainant_info?.contact?.phone,
-          email: issue?.complainant_info?.person?.email,
+          phone: "6239083807",
+          email: "Rishabhnand.singh@ondc.org",
         },
         person: {
-          name: issue?.complainant_info?.person?.name,
+          name: "Rishabhnand Singh",
         },
       },
     };
-    issue?.issue_actions?.complainant_actions.push(initialComplainantAction);
+    if (!issue?.issue_actions?.complainant_actions?.length) {
+      issue?.issue_actions?.complainant_actions.push(initialComplainantAction);
+    }
 
     const issueId = uuidv4();
     const issueRequests: IssueProps = {
@@ -130,11 +132,31 @@ class IssueService {
         city: requestContext?.city,
         state: requestContext?.state,
       });
+
+      if (message?.issue?.rating || message?.issue?.issue_type) {
+        const context = contextFactory.create({
+          action: PROTOCOL_CONTEXT.ISSUE,
+          transactionId: requestContext?.transaction_id,
+          bppId: requestContext?.bpp_id,
+          bpp_uri: requestContext?.bpp_uri,
+          city: requestContext?.city,
+          state: requestContext?.state,
+        });
+        const bppResponse: any = await bppIssueService.closeOrEscalateIssue(
+          context,
+          issue
+        );
+
+        return bppResponse;
+      }
       const imageUri: string[] = [];
+
+      const ImageBaseURL =
+        process.env.VOLUME_IMAGES_BASE_URL || "http://localhost:6969/uploads/";
 
       await issue?.description?.images?.map(async (item: string) => {
         const images = await this.uploadImage(item);
-        const imageLink = "http://localhost:6969/uploads/" + images;
+        const imageLink = ImageBaseURL + images;
         imageUri.push(imageLink);
       });
 
@@ -149,6 +171,7 @@ class IssueService {
       if (process.env.BUGZILLA_API_KEY) {
         bugzillaService.createIssueInBugzilla(issueRequests);
       }
+
       const bppResponse: any = await bppIssueService.issue(
         context,
         issueRequests
@@ -254,7 +277,7 @@ class IssueService {
           ...respondent_actions
         );
 
-        addOrUpdateIssueWithtransactionId(
+        await addOrUpdateIssueWithtransactionId(
           protocolIssueResponse?.[0]?.context?.transaction_id,
           issue
         );
