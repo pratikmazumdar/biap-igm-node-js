@@ -264,6 +264,22 @@ class IssueService {
       throw err;
     }
   }
+
+  /**
+   * get issue by transaction id
+   * @param {Object} messageId
+   */
+  async getSingleIssue(transactionId: string) {
+    try {
+      if (!transactionId) throw new Error("Transaction ID not found");
+
+      const issue: IssueProps = await getIssueByTransactionId(transactionId);
+
+      return issue;
+    } catch (err: any) {
+      throw err;
+    }
+  }
 }
 
 export default IssueService;

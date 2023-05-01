@@ -50,6 +50,32 @@ class IssueController {
   }
 
   /**
+   * get single issue by transaction id
+   * @param {*} req    HTTP request object
+   * @param {*} res    HTTP response object
+   * @param {*} next   Callback argument to the middleware function
+   */
+  getIssue(req: any, res: Response, next: NextFunction) {
+    const { query = {} } = req;
+
+    issueService
+      .getSingleIssue(query?.transactionId)
+      .then((response: any) => {
+        if (!response.error) {
+          res.json({ ...response });
+        } else
+          res.status(404).json({
+            totalCount: 0,
+            issues: [],
+            error: response.error,
+          });
+      })
+      .catch((err: any) => {
+        next(err);
+      });
+  }
+
+  /**
    * on issue
    * @param {*} req    HTTP request object
    * @param {*} res    HTTP response object
