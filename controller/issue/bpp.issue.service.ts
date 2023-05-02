@@ -88,7 +88,6 @@ class BppIssueService {
         },
       };
 
-      console.log(JSON.stringify(issueRequest));
       const response: any = await protocolIssue(issueRequest);
       return { context: context, message: response?.message };
     } catch (err) {

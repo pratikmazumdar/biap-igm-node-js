@@ -147,6 +147,22 @@ class IssueService {
           issue
         );
 
+        const existingIssue: IssueProps = await getIssueByTransactionId(
+          requestContext?.transaction_id
+        );
+        const complainant_actions = issue?.issue_actions?.complainant_actions;
+
+        existingIssue?.issue_actions?.complainant_actions?.splice(
+          0,
+          issue?.issue_actions?.complainant_actions.length,
+          ...complainant_actions
+        );
+
+        await addOrUpdateIssueWithtransactionId(
+          requestContext?.transaction_id,
+          existingIssue
+        );
+
         return bppResponse;
       }
       const imageUri: string[] = [];
