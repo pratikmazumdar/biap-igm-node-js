@@ -185,7 +185,7 @@ class IssueService {
       const issueRequests = await this.addComplainantAction(issue);
 
       if (process.env.BUGZILLA_API_KEY) {
-        bugzillaService.createIssueInBugzilla(issueRequests);
+        bugzillaService.createIssueInBugzilla(issueRequests, requestContext);
       }
 
       const bppResponse: any = await bppIssueService.issue(

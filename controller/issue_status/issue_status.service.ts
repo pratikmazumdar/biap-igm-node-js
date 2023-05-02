@@ -8,9 +8,10 @@ import {
   getIssueByTransactionId,
 } from "../../utils/dbservice";
 import { IssueProps, RespondentActions } from "../../interfaces/issue";
+import BugzillaService from "../../controller/bugzilla/bugzilla.service";
 
 const bppIssueStatusService = new BppIssueStatusService();
-
+const bugzillaService = new BugzillaService();
 class IssueStatusService {
   async getIssueByIssueId(issueId: string) {
     const issue: any = await Issue.find({
@@ -69,6 +70,9 @@ class IssueStatusService {
         respondent_actions?.map((item: RespondentActions) => {
           if (item?.respondent_action === "RESOLVED") {
             issue["issue_status"] = "Close";
+            bugzillaService.updateIssueInBugzilla(
+              protocolSupportResponse?.[0]?.context?.transaction_id
+            );
           }
         });
 
