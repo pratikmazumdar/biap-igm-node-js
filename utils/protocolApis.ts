@@ -1,5 +1,6 @@
 import HttpRequest from "./httpRequest";
 import PROTOCOL_API_URLS from "../shared/protocolRoutes";
+import { IssueRequest } from "../interfaces/bpp_issue";
 
 /**
  * on Issue
@@ -21,7 +22,7 @@ const onIssue = async (messageId: string) => {
  * @param {Object} data
  * @returns
  */
-const protocolIssue = async (data: any) => {
+const protocolIssue = async (data: IssueRequest) => {
   const apiCall = new HttpRequest(
     process.env.PROTOCOL_BASE_URL,
     PROTOCOL_API_URLS.ISSUE,

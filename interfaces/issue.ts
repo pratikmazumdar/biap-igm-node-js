@@ -4,6 +4,8 @@ export interface IssueRequest {
 }
 
 export interface Context {
+  bpp_id: any;
+  bpp_uri: any;
   transaction_id: string;
   city: string;
   state: string;
@@ -245,12 +247,12 @@ export interface IParamProps {
   pageNumber: number;
 }
 
-export interface BppResponse {
+export interface IssueRequestPayload {
   context: Context;
-  message: any;
+  message: Message;
 }
 
-export interface Context {
+export interface RequestContext {
   domain: string;
   country: string;
   city: string;
@@ -267,9 +269,13 @@ export interface Context {
 }
 
 export interface Message {
-  ack: ACK;
+  ack?: ACK;
 }
 
 export interface ACK {
-  status: string;
+  status?: string;
+}
+
+export interface Response {
+  message?: Message;
 }

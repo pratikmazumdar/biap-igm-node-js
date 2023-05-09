@@ -1,17 +1,23 @@
 import { protocolIssue } from "../../utils/protocolApis";
 import { PROTOCOL_CONTEXT } from "../../shared/constants";
-import { Fulfillment, IssueProps, Item } from "../../interfaces/issue";
+import {
+  Fulfillment,
+  IssueProps,
+  Item,
+  Response,
+} from "../../interfaces/issue";
+import { Context, IssueRequest } from "../../interfaces/bpp_issue";
 class BppIssueService {
   /**
    * bpp issue
    * @param {Object} context
    * @param {Object} issue
    */
-  async issue(context: object, issue: IssueProps) {
+  async issue(context: Context, issue: IssueProps) {
     try {
       const { issue_actions, order_details, description } = issue;
 
-      const issueRequest = {
+      const issueRequest: IssueRequest = {
         context: context,
         message: {
           issue: {
@@ -64,17 +70,17 @@ class BppIssueService {
         },
       };
 
-      const response: any = await protocolIssue(issueRequest);
-      return { context: context, message: response?.message };
+      const response: Response = await protocolIssue(issueRequest);
+      return { context: context, message: response.message };
     } catch (err) {
       throw err;
     }
   }
-  async closeOrEscalateIssue(context: object, issue: IssueProps) {
+  async closeOrEscalateIssue(context: Context, issue: IssueProps) {
     try {
       const { issue_actions } = issue;
 
-      const issueRequest = {
+      const issueRequest: any = {
         context: context,
         message: {
           issue: {
@@ -84,6 +90,7 @@ class BppIssueService {
             rating: issue.rating,
             created_at: issue?.created_at,
             updated_at: issue?.updated_at,
+            issue_type: issue?.issue_type,
           },
         },
       };

@@ -1,9 +1,9 @@
 import { logger } from "../../shared/logger";
-import { IssueProps } from "../../interfaces/issue";
+import { Context, IssueProps } from "../../interfaces/issue";
 import HttpRequest from "../../utils/httpRequest";
 
 class BugzillaService {
-  async createIssueInBugzilla(issue: IssueProps, requestContext: any) {
+  async createIssueInBugzilla(issue: IssueProps, requestContext: Context) {
     try {
       const payload = {
         product: issue?.order_details?.items?.[0]?.product?.descriptor?.name,
