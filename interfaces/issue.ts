@@ -68,7 +68,7 @@ export interface IssueActions {
 }
 export interface RespondentActions {
   respondent_action: string;
-  remarks: string;
+  short_desc: string;
   updated_at: Date;
   updated_by: UpdatedBy;
   cascaded_level: number;
@@ -80,7 +80,7 @@ export interface Org {
 
 export interface ComplainantAction {
   complainant_action: string;
-  remarks: string;
+  short_desc: string;
   updated_at: Date;
   updated_by: UpdatedBy;
 }
@@ -111,6 +111,7 @@ export interface Fulfillment {
   start: Start;
   end: End;
   customer: Customer;
+  state?: string;
 }
 
 export interface Customer {

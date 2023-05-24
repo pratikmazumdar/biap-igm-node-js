@@ -38,7 +38,7 @@ class IssueController {
         if (!response.error) {
           res.json({ ...response });
         } else
-          res.status(404).json({
+          res.status(200).json({
             totalCount: 0,
             issues: [],
             error: response.error,

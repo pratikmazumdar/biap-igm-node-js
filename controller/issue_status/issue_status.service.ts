@@ -69,9 +69,10 @@ class IssueStatusService {
         );
         respondent_actions?.map((item: RespondentActions) => {
           if (item?.respondent_action === "RESOLVED") {
-            issue["issue_status"] = "Close";
             bugzillaService.updateIssueInBugzilla(
-              protocolSupportResponse?.[0]?.context?.transaction_id
+              protocolSupportResponse?.[0]?.context?.transaction_id,
+              issue?.issue_actions,
+              true
             );
           }
         });
@@ -91,6 +92,13 @@ class IssueStatusService {
           protocolSupportResponse?.[0]?.context?.transaction_id,
           issue
         );
+
+        if (process.env.BUGZILLA_API_KEY) {
+          bugzillaService.updateIssueInBugzilla(
+            protocolSupportResponse?.[0]?.context?.transaction_id,
+            issue.issue_actions
+          );
+        }
         return protocolSupportResponse?.[0];
       } else {
         const contextFactory = new ContextFactory();
