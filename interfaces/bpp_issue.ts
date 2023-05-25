@@ -47,11 +47,12 @@ export interface ComplainantInfo {
 
 export interface ComplainantInfoContact {
   phone: string;
+  email?: string;
 }
 
 export interface Person {
   name: string;
-  email?: string;
+
 }
 
 export interface Description {

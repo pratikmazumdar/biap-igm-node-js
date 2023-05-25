@@ -43,10 +43,10 @@ export interface ComplainantInfo {
 
 export interface ComplainantInfoContact {
   phone: string;
+  email?: string;
 }
 
 export interface Person {
-  email?: string;
   name: string;
 }
 

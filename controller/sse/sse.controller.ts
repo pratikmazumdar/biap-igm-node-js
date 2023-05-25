@@ -2,9 +2,11 @@ import { addSSEConnection } from "../../utils/sse";
 import { Response, Request, NextFunction } from "express";
 import SseProtocol from "./sseProtocol.service";
 import ConfigureSse from "./configureSse.service";
+import IssueStatusService from "../../controller/issue_status/issue_status.service";
+import { logger } from "../../shared/logger";
 
 const sseProtocolService = new SseProtocol();
-
+const issueStatusService = new IssueStatusService();
 class SseController {
   /**
    * on event
@@ -51,10 +53,19 @@ class SseController {
    * @param {*} req    HTTP request object
    * @param {*} res    HTTP response object
    * @param {*} next   Callback argument to the middleware function
-
    */
   onStatus(req: Request, res: Response, next: NextFunction) {
     const { body: response } = req;
+    const { messageId } = response;
+
+    issueStatusService
+      .onIssueStatus(messageId)
+      .then(() => {
+        logger.info("Updated Issue in Unsolicited Calls");
+      })
+      .catch((err) => {
+        logger.info("Error in Unsolicited calls", JSON.stringify(err));
+      });
 
     sseProtocolService
       .onIssueStatus(response)
