@@ -87,7 +87,7 @@ class BppIssueService {
             id: issue?.id,
             status: issue?.status,
             issue_actions: issue_actions,
-            rating: issue.rating,
+            rating: issue?.rating,
             created_at: issue?.created_at,
             updated_at: issue?.updated_at,
             issue_type: issue?.issue_type,

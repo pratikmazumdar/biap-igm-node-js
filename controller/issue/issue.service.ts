@@ -150,7 +150,12 @@ class IssueService {
         const existingIssue: IssueProps = await getIssueByTransactionId(
           requestContext?.transaction_id
         );
-        existingIssue["issue_status"] = "Close";
+
+        if (message?.issue?.issue_type === "GRIEVANCE") {
+          existingIssue["issue_status"] = "Open";
+        } else {
+          existingIssue["issue_status"] = "Close";
+        }
         const complainant_actions = issue?.issue_actions?.complainant_actions;
 
         existingIssue?.issue_actions?.complainant_actions?.splice(
