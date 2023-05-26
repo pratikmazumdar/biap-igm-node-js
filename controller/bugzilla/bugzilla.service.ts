@@ -1,7 +1,7 @@
 import { logger } from "../../shared/logger";
 import { Context, IssueProps } from "../../interfaces/issue";
 import HttpRequest from "../../utils/httpRequest";
-import { IssueActions } from "interfaces/bpp_issue";
+import { IssueActions } from "../../interfaces/bpp_issue";
 
 class BugzillaService {
   async createIssueInBugzilla(
