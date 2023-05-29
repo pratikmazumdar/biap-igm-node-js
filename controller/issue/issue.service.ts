@@ -85,7 +85,7 @@ class IssueService {
     const date = new Date();
     const initialComplainantAction = {
       complainant_action: "OPEN",
-      remarks: "Complaint created",
+      short_desc: "Complaint created",
       updated_at: date,
       updated_by: {
         org: {
@@ -150,6 +150,12 @@ class IssueService {
         const existingIssue: IssueProps = await getIssueByTransactionId(
           requestContext?.transaction_id
         );
+
+        if (message?.issue?.issue_type === "GRIEVANCE") {
+          existingIssue["issue_status"] = "Open";
+        } else {
+          existingIssue["issue_status"] = "Close";
+        }
         const complainant_actions = issue?.issue_actions?.complainant_actions;
 
         existingIssue?.issue_actions?.complainant_actions?.splice(
@@ -168,7 +174,7 @@ class IssueService {
       const imageUri: string[] = [];
 
       const ImageBaseURL =
-        process.env.VOLUME_IMAGES_BASE_URL || "http://localhost:6969/uploads/";
+        process.env.VOLUME_IMAGES_BASE_URL || "http://localhost:8989/uploads/";
 
       await issue?.description?.images?.map(async (item: string) => {
         const images = await this.uploadImage(item);
@@ -184,10 +190,6 @@ class IssueService {
 
       const issueRequests = await this.addComplainantAction(issue);
 
-      if (process.env.BUGZILLA_API_KEY) {
-        bugzillaService.createIssueInBugzilla(issueRequests, requestContext);
-      }
-
       const bppResponse: any = await bppIssueService.issue(
         context,
         issueRequests
@@ -202,6 +204,15 @@ class IssueService {
         );
         logger.info("Created issue in database");
       }
+
+      if (process.env.BUGZILLA_API_KEY) {
+        bugzillaService.createIssueInBugzilla(
+          issueRequests,
+          requestContext,
+          issueRequests?.issue_actions
+        );
+      }
+
       return bppResponse;
     } catch (err) {
       throw err;
@@ -215,6 +226,7 @@ class IssueService {
       let skip = (pageNumber - 1) * limit;
 
       const issues = await Issue.find({ userId: user.decodedToken.uid })
+        .sort({ created_at: -1 })
         .limit(limit)
         .skip(skip);
       const totalCount = await Issue.countDocuments({
@@ -297,6 +309,12 @@ class IssueService {
           protocolIssueResponse?.[0]?.context?.transaction_id,
           issue
         );
+        if (process.env.BUGZILLA_API_KEY) {
+          bugzillaService.updateIssueInBugzilla(
+            protocolIssueResponse?.[0]?.context?.transaction_id,
+            issue.issue_actions
+          );
+        }
         return this.transform(protocolIssueResponse?.[0]);
       }
     } catch (err) {

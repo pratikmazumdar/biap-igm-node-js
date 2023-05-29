@@ -39,7 +39,7 @@ class BppIssueService {
                 (item: Fulfillment) => {
                   return {
                     id: item?.id?.toString(),
-                    state: "Order-delivered",
+                    state: order_details?.state || "Order-delivered",
                   };
                 }
               ),
@@ -53,7 +53,7 @@ class BppIssueService {
             },
             source: {
               network_participant_id: process.env.BAP_ID,
-              issue_source_type: "CONSUMER",
+              type: "CONSUMER",
             },
             expected_response_time: {
               duration: process.env.EXPECTED_RESPONSE_TIME,
@@ -87,7 +87,7 @@ class BppIssueService {
             id: issue?.id,
             status: issue?.status,
             issue_actions: issue_actions,
-            rating: issue.rating,
+            rating: issue?.rating,
             created_at: issue?.created_at,
             updated_at: issue?.updated_at,
             issue_type: issue?.issue_type,

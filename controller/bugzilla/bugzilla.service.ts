@@ -1,18 +1,23 @@
 import { logger } from "../../shared/logger";
 import { Context, IssueProps } from "../../interfaces/issue";
 import HttpRequest from "../../utils/httpRequest";
+import { IssueActions } from "../../interfaces/bpp_issue";
 
 class BugzillaService {
-  async createIssueInBugzilla(issue: IssueProps, requestContext: Context) {
+  async createIssueInBugzilla(
+    issue: IssueProps,
+    requestContext: Context,
+    issue_Actions: IssueActions
+  ) {
     try {
       const payload = {
         product: issue?.order_details?.items?.[0]?.product?.descriptor?.name,
-        component: issue?.complainant_info?.person?.name,
         summary: issue?.description?.long_desc,
         alias: requestContext?.transaction_id || "",
         bpp_id: issue?.bppId,
         bpp_name: issue?.order_details?.items?.[0]?.product?.bpp_details?.name,
-        attachments: [],
+        attachments: issue?.description.images || [],
+        action: issue_Actions,
       };
 
       const apiCall = new HttpRequest(
@@ -34,14 +39,19 @@ class BugzillaService {
     }
   }
 
-  async updateIssueInBugzilla(transaction_id: string) {
+  async updateIssueInBugzilla(
+    transaction_id: string,
+    issue_actions: IssueActions,
+    resolved: boolean = false
+  ) {
     try {
       const apiCall = new HttpRequest(
         process.env.BUGZILLA_SERVICE_URI,
         `/updateBug/${transaction_id}`,
         "PUT",
         {
-          status: "RESOLVED",
+          status: resolved ? "RESOLVED" : "CONFIRMED",
+          action: issue_actions,
         }
       );
       const result = await apiCall.send();

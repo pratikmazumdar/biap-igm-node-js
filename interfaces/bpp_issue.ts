@@ -47,11 +47,12 @@ export interface ComplainantInfo {
 
 export interface ComplainantInfoContact {
   phone: string;
+  email?: string;
 }
 
 export interface Person {
   name: string;
-  email?: string;
+
 }
 
 export interface Description {
@@ -77,7 +78,7 @@ export interface IssueActions {
 
 export interface ComplainantAction {
   complainant_action: string;
-  remarks: string;
+  short_desc: string;
   updated_at: Date;
   updated_by: UpdatedBy;
 }
@@ -117,5 +118,5 @@ export interface Item {
 
 export interface Source {
   network_participant_id?: string;
-  issue_source_type: string;
+  type: string;
 }
