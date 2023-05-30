@@ -174,7 +174,8 @@ class IssueService {
       const imageUri: string[] = [];
 
       const ImageBaseURL =
-        process.env.VOLUME_IMAGES_BASE_URL || "http://localhost:8989/uploads/";
+        process.env.VOLUME_IMAGES_BASE_URL ||
+        "http://localhost:8989/issueApis/uploads/";
 
       await issue?.description?.images?.map(async (item: string) => {
         const images = await this.uploadImage(item);
