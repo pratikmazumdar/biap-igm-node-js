@@ -35,7 +35,7 @@ class IssueStatusService {
     try {
       const { context: requestContext, message } = order;
 
-      const issueDetails = await this.getIssueByIssueId(message?.id);
+      const issueDetails = await this.getIssueByIssueId(message?.issue_id);
 
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
