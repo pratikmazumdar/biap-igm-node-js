@@ -111,7 +111,7 @@ export interface Fulfillment {
   start: Start;
   end: End;
   customer: Customer;
-  state?: string;
+  state: any;
 }
 
 export interface Customer {

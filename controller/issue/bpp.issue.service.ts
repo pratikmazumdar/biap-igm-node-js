@@ -39,7 +39,7 @@ class BppIssueService {
                 (item: Fulfillment) => {
                   return {
                     id: item?.id?.toString(),
-                    state: order_details?.state || "Order-delivered",
+                    state: item?.state?.descriptor?.code,
                   };
                 }
               ),
