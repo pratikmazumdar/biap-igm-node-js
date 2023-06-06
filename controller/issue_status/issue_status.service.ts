@@ -35,14 +35,14 @@ class IssueStatusService {
     try {
       const { context: requestContext, message } = order;
 
-      const issueDetails = await this.getIssueByIssueId(message?.id);
+      const issueDetails = await this.getIssueByIssueId(message?.issue_id);
 
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
         action: PROTOCOL_CONTEXT.ISSUE_STATUS,
         transactionId: requestContext?.transaction_id,
         bppId: requestContext?.bpp_id,
-        bpp_uri: issueDetails?.bpp_uri,
+        bpp_uri: issueDetails?.[0]?.bpp_uri,
         cityCode: issueDetails.city,
       });
 

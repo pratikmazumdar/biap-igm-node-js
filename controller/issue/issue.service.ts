@@ -134,21 +134,20 @@ class IssueService {
       });
 
       if (message?.issue?.rating || message?.issue?.issue_type) {
+        const existingIssue: IssueProps = await getIssueByTransactionId(
+          requestContext?.transaction_id
+        );
         const context = contextFactory.create({
           action: PROTOCOL_CONTEXT.ISSUE,
           transactionId: requestContext?.transaction_id,
           bppId: requestContext?.bpp_id,
-          bpp_uri: requestContext?.bpp_uri,
+          bpp_uri: existingIssue?.bpp_uri,
           city: requestContext?.city,
           state: requestContext?.state,
         });
         const bppResponse: any = await bppIssueService.closeOrEscalateIssue(
           context,
           issue
-        );
-
-        const existingIssue: IssueProps = await getIssueByTransactionId(
-          requestContext?.transaction_id
         );
 
         if (message?.issue?.issue_type === "GRIEVANCE") {
