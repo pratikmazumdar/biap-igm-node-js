@@ -90,7 +90,7 @@ class BppIssueService {
             rating: issue?.rating,
             created_at: issue?.created_at,
             updated_at: issue?.updated_at,
-            issue_type: issue?.issue_type,
+            issue_type: PROTOCOL_CONTEXT?.ISSUE.toUpperCase(),
           },
         },
       };
