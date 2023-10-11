@@ -86,6 +86,14 @@ class IssueStatusService {
           protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;
         issue["resolution"] =
           protocolSupportResponse?.[0]?.message?.issue?.resolution;
+        issue["resolution_history"] = [
+          {
+          ...protocolSupportResponse?.[0]?.message?.issue?.resolution,
+          updated_at:
+          protocolSupportResponse?.[0]?.message?.issue?.updated_at,
+          },
+          ...issue["resolution_history"],
+          ];
 
         await addOrUpdateIssueWithtransactionId(
           protocolSupportResponse?.[0]?.context?.transaction_id,

@@ -36,6 +36,7 @@ const IssueSchema = new mongoose.Schema(
     description: { type: Object },
     issue_actions: { type: Object },
     resolution: { type: Object, default: {} },
+    resolution_history: { type: [Object], default: [{}]},
     resolution_provider: { type: Object, default: {} },
     orderId: { type: String },
     created_at: { type: String },

@@ -30,6 +30,7 @@ export interface IssueProps {
   id?: string;
   issue_status: string;
   resolution: Object;
+  resolution_history: Object[];
   resolution_provider: Object;
   status: string;
   rating?: string;
