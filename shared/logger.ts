@@ -1,10 +1,10 @@
 import pino from 'pino'
-import expressPino from 'express-pino-logger'
+import pinoHttp from 'pino-http'
 
 export const logger = pino({
-  level: process.env.LOG_LEVEL || 'info',
+  level: `${process.env.LOG_LEVEL}` || 'info',
 })
 
-export const expressLogger = expressPino({
+export const expressLogger = pinoHttp({
   logger,
 })
