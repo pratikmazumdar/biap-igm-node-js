@@ -12,6 +12,7 @@ class BugzillaService {
     try {
       const payload = {
         product: issue?.order_details?.items?.[0]?.product?.descriptor?.name,
+        issue_desc: issue?.description?.short_desc,
         summary: issue?.description?.long_desc,
         alias: requestContext?.transaction_id || "",
         bpp_id: issue?.bppId,
@@ -19,7 +20,6 @@ class BugzillaService {
         attachments: issue?.description.images || [],
         action: issue_Actions,
       };
-
       const apiCall = new HttpRequest(
         process.env.BUGZILLA_SERVICE_URI,
         "/create",

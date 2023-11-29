@@ -1,6 +1,6 @@
 import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
-import { PROTOCOL_CONTEXT } from "../../shared/constants";
+import { PROTOCOL_CONTEXT, TRUDESK } from "../../shared/constants";
 import ContextFactory from "../../utils/contextFactory";
 import BppIssueService from "./bpp.issue.service";
 import Issue from "../../database/issue.model";
@@ -22,7 +22,6 @@ import {
 
 const bppIssueService = new BppIssueService();
 const bugzillaService = new BugzillaService();
-
 class IssueService {
   /**
    *
@@ -129,7 +128,7 @@ class IssueService {
         transactionId: requestContext?.transaction_id,
         bppId: issue?.bppId,
         bpp_uri: issue?.bpp_uri,
-        city: requestContext?.city,
+        city: requestContext?.city, 
         state: requestContext?.state,
       });
 
@@ -156,7 +155,6 @@ class IssueService {
           existingIssue["issue_status"] = "Close";
         }
         const complainant_actions = issue?.issue_actions?.complainant_actions;
-
         existingIssue?.issue_actions?.complainant_actions?.splice(
           0,
           issue?.issue_actions?.complainant_actions.length,
@@ -166,6 +164,12 @@ class IssueService {
         await addOrUpdateIssueWithtransactionId(
           requestContext?.transaction_id,
           existingIssue
+        );
+
+        bugzillaService.updateIssueInBugzilla(
+          requestContext?.transaction_id,
+          issue?.issue_actions,
+          true
         );
 
         return bppResponse;
@@ -188,6 +192,7 @@ class IssueService {
         ...imageUri
       );
 
+
       const issueRequests = await this.addComplainantAction(issue);
 
       const bppResponse: any = await bppIssueService.issue(
@@ -204,15 +209,14 @@ class IssueService {
         );
         logger.info("Created issue in database");
       }
-
-      if (process.env.BUGZILLA_API_KEY) {
-        bugzillaService.createIssueInBugzilla(
-          issueRequests,
-          requestContext,
-          issueRequests?.issue_actions
-        );
-      }
-
+        if (process.env.BUGZILLA_API_KEY || process.env.SELECTED_ISSUE_CRM === TRUDESK) {
+          console.log('process.env.bugzilla=======', process.env.BUGZILLA_API_KEY)
+          bugzillaService.createIssueInBugzilla(
+            issueRequests,
+            requestContext,
+            issueRequests?.issue_actions
+          );
+        }
       return bppResponse;
     } catch (err) {
       throw err;
@@ -273,7 +277,7 @@ class IssueService {
   async onIssueOrder(messageId: string) {
     try {
       const protocolIssueResponse = await onIssueOrder(messageId);
-
+      console.log('protocolIssueResponse==================', protocolIssueResponse)
       if (
         !(protocolIssueResponse && protocolIssueResponse.length) ||
         protocolIssueResponse?.[0]?.error
@@ -309,12 +313,14 @@ class IssueService {
           protocolIssueResponse?.[0]?.context?.transaction_id,
           issue
         );
-        if (process.env.BUGZILLA_API_KEY) {
-          bugzillaService.updateIssueInBugzilla(
-            protocolIssueResponse?.[0]?.context?.transaction_id,
-            issue.issue_actions
-          );
-        }
+
+          if (process.env.BUGZILLA_API_KEY || process.env.SELECTED_ISSUE_CRM == "trudesk") {
+            bugzillaService.updateIssueInBugzilla(
+              protocolIssueResponse?.[0]?.context?.transaction_id,
+              issue.issue_actions
+            );
+          }
+        
         return this.transform(protocolIssueResponse?.[0]);
       }
     } catch (err) {

@@ -57,7 +57,7 @@ class IssueController {
    */
   getIssue(req: any, res: Response, next: NextFunction) {
     const { query = {} } = req;
-
+    console.log("query------------------------", req.query);
     issueService
       .getSingleIssue(query?.transactionId)
       .then((response: any) => {
@@ -84,7 +84,7 @@ class IssueController {
   onIssue(req: any, res: Response, next: NextFunction) {
     const { query } = req;
     const { messageId } = query;
-
+    console.log("messageId------------------------", req.query);
     issueService
       .onIssueOrder(messageId)
       .then((issue: any) => {

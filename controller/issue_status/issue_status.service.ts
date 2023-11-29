@@ -93,7 +93,7 @@ class IssueStatusService {
           issue
         );
 
-        if (process.env.BUGZILLA_API_KEY) {
+        if (process.env.BUGZILLA_API_KEY || process.env.SELECTED_ISSUE_CRM) {
           bugzillaService.updateIssueInBugzilla(
             protocolSupportResponse?.[0]?.context?.transaction_id,
             issue.issue_actions

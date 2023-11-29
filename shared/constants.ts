@@ -56,3 +56,4 @@ export const PAYMENT_COLLECTED_BY = {
   BAP: "BAP",
   BPP: "BPP",
 };
+export const TRUDESK="TRUDESK"
