@@ -4,6 +4,7 @@ export interface IssueRequest {
 }
 
 export interface Context {
+  domain:string;
   bpp_id: any;
   bpp_uri: any;
   transaction_id: string;
