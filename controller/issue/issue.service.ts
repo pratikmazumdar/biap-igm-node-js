@@ -125,6 +125,7 @@ class IssueService {
 
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
+        domain: requestContext?.domain,
         action: PROTOCOL_CONTEXT.ISSUE,
         transactionId: requestContext?.transaction_id,
         bppId: issue?.bppId,
