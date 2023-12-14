@@ -10,7 +10,7 @@ class ContextFactory {
   timestamp: Date;
   constructor(arg?: any) {
     let {
-      domain,
+      domain = process.env.DOMAIN,
       //TODO: map city to city code. eg. Haydrabad
       country = process.env.COUNTRY,
       bapId = process.env.BAP_ID,
@@ -46,9 +46,16 @@ class ContextFactory {
     }
   }
 
+  getTransactionId(transactionId: string) {
+    if (transactionId) {
+      return transactionId;
+    } else {
+      return uuidv4();
+    }
+  }
+
   create(contextObject?: any) {
     const {
-      domain,
       transactionId, //FIXME: if ! found in args then create new
       messageId = uuidv4(),
       action = PROTOCOL_CONTEXT.ISSUE,
@@ -60,7 +67,7 @@ class ContextFactory {
     } = contextObject || {};
 
     return {
-      domain: domain,
+      domain: this.domain,
       country: this.country,
       city: this.getCity(city, state, cityCode),
       action: action,
@@ -68,7 +75,7 @@ class ContextFactory {
       bap_id: this.bapId,
       bap_uri: this.bapUrl,
       bpp_uri: bpp_uri,
-      transaction_id: transactionId || uuidv4(),
+      transaction_id: this.getTransactionId(transactionId),
       message_id: messageId,
       timestamp: this.timestamp,
       ...(bppId && { bpp_id: bppId }),
