@@ -286,7 +286,6 @@ class IssueService {
       ) {
         const contextFactory = new ContextFactory();
         const context = contextFactory.create({
-          domain: requestContext?.domain,
           messageId: messageId,
           action: PROTOCOL_CONTEXT.ON_ISSUE,
         });
