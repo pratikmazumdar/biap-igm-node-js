@@ -2,7 +2,7 @@ import { logger } from "./shared/logger";
 import createServer from "./app";
 import dbConnect from "./database/mongooseConnector";
 
-const port = process.env.PORT || 6969;
+const port = 6969;
 
 const app = createServer();
 
