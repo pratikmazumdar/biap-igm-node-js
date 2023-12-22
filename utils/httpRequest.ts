@@ -57,6 +57,7 @@ class HttpRequest {
           method: this.method,
           headers: headers,
           timeout: 180000, // If the request takes longer than `timeout`, the request will be aborted.
+          params: this.data,
         });
       } else {
         // Make server request using axios
