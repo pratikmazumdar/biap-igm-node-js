@@ -69,13 +69,15 @@ class IssueService {
     issue: IssueProps,
     uid: string,
     message_id: string,
-    transaction_id: string
+    transaction_id: string,
+    domain : string
   ) {
     const issueReq = {
       ...issue,
       userId: uid,
-      message_id: message_id,
-      transaction_id: transaction_id,
+      domain,
+      message_id,
+      transaction_id,
     };
     await addOrUpdateIssueWithtransactionId(issue?.issueId, issueReq);
   }
@@ -205,7 +207,8 @@ class IssueService {
           issueRequests,
           userDetails?.decodedToken?.uid,
           bppResponse?.context?.message_id,
-          bppResponse?.context?.transaction_id
+          bppResponse?.context?.transaction_id,
+          requestContext?.domain,
         );
         logger.info("Created issue in database");
       }
