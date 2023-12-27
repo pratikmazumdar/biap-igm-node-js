@@ -39,6 +39,7 @@ class IssueStatusService {
 
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
+        domain : requestContext?.domain,
         action: PROTOCOL_CONTEXT.ISSUE_STATUS,
         transactionId: requestContext?.transaction_id,
         bppId: requestContext?.bpp_id,

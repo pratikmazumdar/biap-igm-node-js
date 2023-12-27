@@ -108,7 +108,7 @@ class IssueService {
     const issueId = uuidv4();
     const issueRequests: IssueProps = {
       ...issue,
-      issueId: issueId,
+      issueId,
     };
 
     return issueRequests;
@@ -140,16 +140,17 @@ class IssueService {
           requestContext?.transaction_id
         );
         const context = contextFactory.create({
+          domain : requestContext?.domain,
           action: PROTOCOL_CONTEXT.ISSUE,
           transactionId: requestContext?.transaction_id,
-          bppId: requestContext?.bpp_id,
+          bppId: requestContext?.bpp_id || existingIssue.bppId,
           bpp_uri: existingIssue?.bpp_uri,
           city: requestContext?.city,
           state: requestContext?.state,
         });
         const bppResponse: any = await bppIssueService.closeOrEscalateIssue(
           context,
-          issue
+          {...issue , id : existingIssue.issueId}
         );
 
         if (message?.issue?.issue_type === "GRIEVANCE") {
