@@ -93,8 +93,9 @@ const onIssueOrder = async (messageId: string) => {
 const onIssue_status = async (messageId: any) => {
   const apiCall = new HttpRequest(
     process.env.PROTOCOL_BASE_URL,
-    PROTOCOL_API_URLS.ON_ISSUE_STATUS + "?messageId=" + messageId,
-    "get"
+    PROTOCOL_API_URLS.RESPONSE,
+    "get",
+    { requestType: "on_issue_status", messageId }
   );
 
   const result = await apiCall.send();
