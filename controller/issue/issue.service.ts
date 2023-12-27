@@ -108,7 +108,7 @@ class IssueService {
     const issueId = uuidv4();
     const issueRequests: IssueProps = {
       ...issue,
-      issueId,
+      issueId : issueId,
     };
 
     return issueRequests;
