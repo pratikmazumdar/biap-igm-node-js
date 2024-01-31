@@ -5,6 +5,7 @@ import ContextFactory from "../../utils/contextFactory";
 import BppIssueService from "./bpp.issue.service";
 import Issue from "../../database/issue.model";
 import { logger } from "../../shared/logger";
+import getSignedUrlForUpload from "../../utils/s3Util";
 
 import {
   IParamProps,
@@ -19,6 +20,7 @@ import {
   addOrUpdateIssueWithtransactionId,
   getIssueByTransactionId,
 } from "../../utils/dbservice";
+import { method } from "lodash";
 
 const bppIssueService = new BppIssueService();
 const bugzillaService = new BugzillaService();
@@ -52,14 +54,42 @@ class IssueService {
         throw new Error("Invalid input string");
       }
 
-      response.type = matches[1];
-      response.data = new Buffer(matches[2], "base64");
-      let decodedImg = response;
-      let imageBuffer = decodedImg.data;
-      let fileName = Date.now().toString() + ".png";
+      const b64toBlob = (b64Data: any, contentType = "", sliceSize = 512) => {
+        const byteCharacters = atob(b64Data);
+        const byteArrays = [];
 
-      fs.writeFileSync("./images/" + fileName, imageBuffer, "utf8");
-      return fileName;
+        for (
+          let offset = 0;
+          offset < byteCharacters.length;
+          offset += sliceSize
+        ) {
+          const slice = byteCharacters.slice(offset, offset + sliceSize);
+
+          const byteNumbers = new Array(slice.length);
+          for (let i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+          }
+
+          const byteArray = new Uint8Array(byteNumbers);
+          byteArrays.push(byteArray);
+        }
+
+        const blob = new Blob(byteArrays, { type: contentType });
+        return blob;
+      };
+
+      const blob = b64toBlob(base64.split(";base64").pop());
+      const resp = await getSignedUrlForUpload({
+        path: uuidv4(),
+        filetype: "png",
+      });
+
+      fetch(resp?.urls, {
+        method: "PUT",
+        headers: { "Content-Type": "image/*" },
+        body: blob,
+      });
+      return resp?.publicUrl;
     } catch (err) {
       return err;
     }
@@ -70,7 +100,7 @@ class IssueService {
     uid: string,
     message_id: string,
     transaction_id: string,
-    domain : string
+    domain: string
   ) {
     const issueReq = {
       ...issue,
@@ -108,7 +138,7 @@ class IssueService {
     const issueId = uuidv4();
     const issueRequests: IssueProps = {
       ...issue,
-      issueId : issueId,
+      issueId: issueId,
     };
 
     return issueRequests;
@@ -126,7 +156,7 @@ class IssueService {
 
       const contextFactory = new ContextFactory();
       const context = contextFactory.create({
-        domain : requestContext?.domain,
+        domain: requestContext?.domain,
         action: PROTOCOL_CONTEXT.ISSUE,
         transactionId: requestContext?.transaction_id,
         bppId: issue?.bppId,
@@ -140,7 +170,7 @@ class IssueService {
           requestContext?.transaction_id
         );
         const context = contextFactory.create({
-          domain : requestContext?.domain,
+          domain: requestContext?.domain,
           action: PROTOCOL_CONTEXT.ISSUE,
           transactionId: requestContext?.transaction_id,
           bppId: requestContext?.bpp_id || existingIssue.bppId,
@@ -150,7 +180,7 @@ class IssueService {
         });
         const bppResponse: any = await bppIssueService.closeOrEscalateIssue(
           context,
-          {...issue , id : existingIssue.issueId}
+          { ...issue, id: existingIssue.issueId }
         );
 
         if (message?.issue?.issue_type === "GRIEVANCE") {
@@ -180,13 +210,12 @@ class IssueService {
       }
       const imageUri: string[] = [];
 
-      const ImageBaseURL =
-        process.env.VOLUME_IMAGES_BASE_URL ||
-        "http://localhost:8989/issueApis/uploads/";
+      // const ImageBaseURL = getSignedUrlForUpload()
+      // process.env.VOLUME_IMAGES_BASE_URL ||
+      // "http://localhost:8989/issueApis/uploads/";
 
-      await issue?.description?.images?.map(async (item: string) => {
-        const images = await this.uploadImage(item);
-        const imageLink = ImageBaseURL + images;
+      issue?.description?.images?.map(async (item: string) => {
+        const imageLink = await this.uploadImage(item);
         imageUri.push(imageLink);
       });
 
@@ -209,7 +238,7 @@ class IssueService {
           userDetails?.decodedToken?.uid,
           bppResponse?.context?.message_id,
           bppResponse?.context?.transaction_id,
-          requestContext?.domain,
+          requestContext?.domain
         );
         logger.info("Created issue in database");
       }
