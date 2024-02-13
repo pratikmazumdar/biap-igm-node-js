@@ -1,4 +1,3 @@
-import fs from "fs";
 import { v4 as uuidv4 } from "uuid";
 import { PROTOCOL_CONTEXT, TRUDESK } from "../../shared/constants";
 import ContextFactory from "../../utils/contextFactory";
@@ -9,7 +8,6 @@ import getSignedUrlForUpload from "../../utils/s3Util";
 
 import {
   IParamProps,
-  IResponseProps,
   IssueProps,
   IssueRequest,
   UserDetails,
@@ -20,7 +18,6 @@ import {
   addOrUpdateIssueWithtransactionId,
   getIssueByTransactionId,
 } from "../../utils/dbservice";
-import { method } from "lodash";
 
 const bppIssueService = new BppIssueService();
 const bugzillaService = new BugzillaService();
@@ -44,11 +41,11 @@ class IssueService {
     try {
       let matches: string[] | any = base64.match(
           /^data:([A-Za-z-+/]+);base64,(.+)$/
-        ),
-        response: IResponseProps = {
-          type: "",
-          data: new Buffer(matches[1], "base64"),
-        };
+        )
+        // response: IResponseProps = {
+        //   type: "",
+        //   data: new Buffer(matches[1], "base64"),
+        // };
 
       if (matches.length !== 3) {
         throw new Error("Invalid input string");
