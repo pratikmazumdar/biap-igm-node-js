@@ -40,12 +40,12 @@ class IssueService {
   async uploadImage(base64: string) {
     try {
       let matches: string[] | any = base64.match(
-          /^data:([A-Za-z-+/]+);base64,(.+)$/
-        )
-        // response: IResponseProps = {
-        //   type: "",
-        //   data: new Buffer(matches[1], "base64"),
-        // };
+        /^data:([A-Za-z-+/]+);base64,(.+)$/
+      );
+      // response: IResponseProps = {
+      //   type: "",
+      //   data: new Buffer(matches[1], "base64"),
+      // };
 
       if (matches.length !== 3) {
         throw new Error("Invalid input string");
@@ -109,7 +109,7 @@ class IssueService {
     await addOrUpdateIssueWithtransactionId(issue?.issueId, issueReq);
   }
 
-  async addComplainantAction(issue: IssueProps) {
+  async addComplainantAction(issue: IssueProps, domain: string) {
     const date = new Date();
     const initialComplainantAction = {
       complainant_action: "OPEN",
@@ -117,15 +117,10 @@ class IssueService {
       updated_at: date,
       updated_by: {
         org: {
-          name: process.env.BAP_ID + "::" + process.env.DOMAIN,
+          name: process.env.BAP_ID + "::" + domain,
         },
-        contact: {
-          phone: "6239083807",
-          email: "Rishabhnand.singh@ondc.org",
-        },
-        person: {
-          name: "Rishabhnand Singh",
-        },
+        contact: issue.complainant_info.contact,
+        person: issue.complainant_info.person,
       },
     };
     if (!issue?.issue_actions?.complainant_actions?.length) {
@@ -186,11 +181,7 @@ class IssueService {
           existingIssue["issue_status"] = "Close";
         }
         const complainant_actions = issue?.issue_actions?.complainant_actions;
-        existingIssue?.issue_actions?.complainant_actions?.splice(
-          0,
-          issue?.issue_actions?.complainant_actions.length,
-          ...complainant_actions
-        );
+        existingIssue.issue_actions.complainant_actions = complainant_actions;
 
         await addOrUpdateIssueWithtransactionId(
           requestContext?.transaction_id,
@@ -222,7 +213,10 @@ class IssueService {
         ...imageUri
       );
 
-      const issueRequests = await this.addComplainantAction(issue);
+      const issueRequests = await this.addComplainantAction(
+        issue,
+        requestContext.domain
+      );
 
       const bppResponse: any = await bppIssueService.issue(
         context,
@@ -335,11 +329,7 @@ class IssueService {
           protocolIssueResponse?.[0]?.context?.transaction_id
         );
 
-        issue?.issue_actions?.respondent_actions?.splice(
-          0,
-          issue?.issue_actions?.respondent_actions.length,
-          ...respondent_actions
-        );
+        issue.issue_actions.respondent_actions = respondent_actions;
 
         await addOrUpdateIssueWithtransactionId(
           protocolIssueResponse?.[0]?.context?.transaction_id,
