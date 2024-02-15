@@ -80,11 +80,7 @@ class IssueStatusService {
           }
         });
 
-        issue?.issue_actions?.respondent_actions?.splice(
-          0,
-          issue?.issue_actions?.respondent_actions.length,
-          ...respondent_actions
-        );
+        issue.issue_actions.respondent_actions = respondent_actions;
 
         issue["resolution_provider"] =
           protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;

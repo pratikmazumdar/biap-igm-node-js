@@ -40,12 +40,12 @@ class IssueService {
   async uploadImage(base64: string) {
     try {
       let matches: string[] | any = base64.match(
-          /^data:([A-Za-z-+/]+);base64,(.+)$/
-        )
-        // response: IResponseProps = {
-        //   type: "",
-        //   data: new Buffer(matches[1], "base64"),
-        // };
+        /^data:([A-Za-z-+/]+);base64,(.+)$/
+      );
+      // response: IResponseProps = {
+      //   type: "",
+      //   data: new Buffer(matches[1], "base64"),
+      // };
 
       if (matches.length !== 3) {
         throw new Error("Invalid input string");
@@ -186,11 +186,7 @@ class IssueService {
           existingIssue["issue_status"] = "Close";
         }
         const complainant_actions = issue?.issue_actions?.complainant_actions;
-        existingIssue?.issue_actions?.complainant_actions?.splice(
-          0,
-          issue?.issue_actions?.complainant_actions.length,
-          ...complainant_actions
-        );
+        existingIssue.issue_actions.complainant_actions = complainant_actions;
 
         await addOrUpdateIssueWithtransactionId(
           requestContext?.transaction_id,
@@ -335,11 +331,7 @@ class IssueService {
           protocolIssueResponse?.[0]?.context?.transaction_id
         );
 
-        issue?.issue_actions?.respondent_actions?.splice(
-          0,
-          issue?.issue_actions?.respondent_actions.length,
-          ...respondent_actions
-        );
+        issue.issue_actions.respondent_actions = respondent_actions;
 
         await addOrUpdateIssueWithtransactionId(
           protocolIssueResponse?.[0]?.context?.transaction_id,
