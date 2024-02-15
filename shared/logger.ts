@@ -1,7 +1,7 @@
-import pino from "pino";
+import pino, { Logger } from "pino";
 import expressPino from "express-pino-logger";
 
-export const logger = pino({
+export const logger: Logger = pino({
   level: "info",
 });
 

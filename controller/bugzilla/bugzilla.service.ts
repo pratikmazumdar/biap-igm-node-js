@@ -47,7 +47,7 @@ class BugzillaService {
     try {
       const apiCall = new HttpRequest(
         process.env.BUGZILLA_SERVICE_URI,
-        `/updateBug/${transaction_id}`,
+        "/updateBug/".concat(transaction_id),
         "PUT",
         {
           status: resolved ? "RESOLVED" : "CONFIRMED",
@@ -60,7 +60,6 @@ class BugzillaService {
       }
     } catch (error) {
       logger.info("Error in updating issue in Bugzilla", error);
-      return error;
     }
   }
 }

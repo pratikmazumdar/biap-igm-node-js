@@ -40,13 +40,8 @@ class IssueService {
   async uploadImage(base64: string) {
     try {
       let matches: string[] | any = base64.match(
-          /^data:([A-Za-z-+/]+);base64,(.+)$/
-        )
-        // response: IResponseProps = {
-        //   type: "",
-        //   data: new Buffer(matches[1], "base64"),
-        // };
-
+        /^data:([A-Za-z-+/]+);base64,(.+)$/
+      );
       if (matches.length !== 3) {
         throw new Error("Invalid input string");
       }
@@ -109,7 +104,7 @@ class IssueService {
     await addOrUpdateIssueWithtransactionId(issue?.issueId, issueReq);
   }
 
-  async addComplainantAction(issue: IssueProps) {
+  async addComplainantAction(issue: IssueProps, domain: string) {
     const date = new Date();
     const initialComplainantAction = {
       complainant_action: "OPEN",
@@ -117,7 +112,7 @@ class IssueService {
       updated_at: date,
       updated_by: {
         org: {
-          name: process.env.BAP_ID + "::" + process.env.DOMAIN,
+          name: process.env.BAP_ID + "::" + domain,
         },
         contact: {
           phone: "6239083807",
@@ -207,10 +202,6 @@ class IssueService {
       }
       const imageUri: string[] = [];
 
-      // const ImageBaseURL = getSignedUrlForUpload()
-      // process.env.VOLUME_IMAGES_BASE_URL ||
-      // "http://localhost:8989/issueApis/uploads/";
-
       issue?.description?.images?.map(async (item: string) => {
         const imageLink = await this.uploadImage(item);
         imageUri.push(imageLink);
@@ -222,7 +213,10 @@ class IssueService {
         ...imageUri
       );
 
-      const issueRequests = await this.addComplainantAction(issue);
+      const issueRequests = await this.addComplainantAction(
+        issue,
+        context.domain
+      );
 
       const bppResponse: any = await bppIssueService.issue(
         context,
