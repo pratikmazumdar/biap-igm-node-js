@@ -109,7 +109,7 @@ class IssueService {
     await addOrUpdateIssueWithtransactionId(issue?.issueId, issueReq);
   }
 
-  async addComplainantAction(issue: IssueProps) {
+  async addComplainantAction(issue: IssueProps, domain: string) {
     const date = new Date();
     const initialComplainantAction = {
       complainant_action: "OPEN",
@@ -117,15 +117,10 @@ class IssueService {
       updated_at: date,
       updated_by: {
         org: {
-          name: process.env.BAP_ID + "::" + process.env.DOMAIN,
+          name: process.env.BAP_ID + "::" + domain,
         },
-        contact: {
-          phone: "6239083807",
-          email: "Rishabhnand.singh@ondc.org",
-        },
-        person: {
-          name: "Rishabhnand Singh",
-        },
+        contact: issue.complainant_info.contact,
+        person: issue.complainant_info.person,
       },
     };
     if (!issue?.issue_actions?.complainant_actions?.length) {
@@ -218,7 +213,10 @@ class IssueService {
         ...imageUri
       );
 
-      const issueRequests = await this.addComplainantAction(issue);
+      const issueRequests = await this.addComplainantAction(
+        issue,
+        requestContext.domain
+      );
 
       const bppResponse: any = await bppIssueService.issue(
         context,
