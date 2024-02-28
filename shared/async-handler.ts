@@ -8,4 +8,4 @@ const wrap = (fn: (...args: any[]) => Promise<void | Response>) =>
     return Promise.resolve(fnReturn).catch(next);
   };
 
-export = wrap;
+export default wrap;

@@ -1,7 +1,6 @@
 import { UserDetails } from './issue';
+import { Request as ExpressRequest } from 'express';
 
-declare module Express {
-  export interface Request {
-    user: UserDetails;
-  }
+export interface Request extends ExpressRequest {
+  user: UserDetails; // or any other type
 }

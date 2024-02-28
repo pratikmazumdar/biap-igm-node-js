@@ -1,4 +1,5 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
+import { Request } from 'interfaces/custom';
 import IssueService from './issue.service';
 import { IParamProps, UserDetails } from 'interfaces/issue';
 

@@ -1,16 +1,16 @@
-import { PROTOCOL_CONTEXT } from '../../shared/constants';
-import ContextFactory from '../../utils/contextFactory';
+import { PROTOCOL_CONTEXT } from 'shared/constants';
+import ContextFactory from 'utils/contextFactory';
 import BppIssueService from './bpp.issue.service';
-import Issue from '../../database/issue.model';
-import { logger } from '../../shared/logger';
-import { transform } from '../../utils';
+import Issue from 'database/issue.model';
+import { logger } from 'shared/logger';
+import { transform } from 'utils';
 
-import * as bap from '../../interfaces/issue';
+import * as bap from 'interfaces/issue';
 import BugzillaService from '../crm/crm.service';
-import { onIssueOrder } from '../../utils/protocolApis';
-import { addOrUpdateIssueWithtransactionId, getIssueByTransactionId } from '../../utils/dbservice';
-import * as bpp from '../../interfaces/bpp_issue';
-import { getEnv } from '../../utils';
+import { onIssueOrder } from 'utils/protocolApis';
+import { addOrUpdateIssueWithtransactionId, getIssueByTransactionId } from 'utils/dbservice';
+import * as bpp from 'interfaces/bpp_issue';
+import { getEnv } from 'utils';
 import util from 'util';
 import { UUID, randomUUID } from 'crypto';
 
@@ -124,12 +124,6 @@ class IssueService {
 
     // return bppResponse;
   }
-
-  /**
-   * get issues list
-   * @param {Object} params
-   * @param {Object} user
-   */
 
   async getIssuesList(user: bap.UserDetails, params: bap.IParamProps) {
     const { limit = 10, pageNumber = 1 } = params;

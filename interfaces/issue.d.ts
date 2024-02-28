@@ -1,3 +1,5 @@
+import { DecodedIdToken } from 'firebase-admin/auth';
+
 export interface IssueRequest {
   context: Context;
   message: Message;
@@ -210,24 +212,8 @@ export interface Quantity {
 }
 
 export interface UserDetails {
-  decodedToken: DecodedToken;
+  decodedToken: DecodedIdToken;
   token: string;
-}
-
-export interface DecodedToken {
-  name: string;
-  picture: string;
-  iss: string;
-  aud: string;
-  auth_time: number;
-  user_id: string;
-  sub: string;
-  iat: number;
-  exp: number;
-  email: string;
-  email_verified: boolean;
-  firebase: Firebase;
-  uid: string;
 }
 
 export interface Firebase {
@@ -236,7 +222,7 @@ export interface Firebase {
 }
 
 export interface Identities {
-  "google.com": string[];
+  'google.com': string[];
   email: string[];
 }
 
