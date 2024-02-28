@@ -52,7 +52,6 @@ export interface ComplainantInfoContact {
 
 export interface Person {
   name: string;
-
 }
 
 export interface Description {
@@ -119,4 +118,8 @@ export interface Item {
 export interface Source {
   network_participant_id?: string;
   type: string;
+}
+
+export interface Response {
+  message: Message;
 }

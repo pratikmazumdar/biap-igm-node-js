@@ -1,10 +1,45 @@
-import pino, { Logger } from "pino";
-import expressPino from "express-pino-logger";
+import winston, { Logger } from "winston";
+import "dotenv/config";
+import util from "util";
+const { combine, colorize } = winston.format;
 
-export const logger: Logger = pino({
-  level: "info",
+const transform = () => {
+  return {
+    transform: (info: any) => {
+      info.oldMessage = info.message;
+      info.message = util.format(
+        info.stack || info.message,
+        ...(info[Symbol.for("splat")] || [])
+      );
+      return info;
+    },
+  };
+};
+
+const transformBack = () => {
+  return {
+    transform: (info: any) => {
+      info.message = info.oldMessage;
+      return info;
+    },
+  };
+};
+
+const logger: Logger = winston.createLogger({
+  format: combine(
+    colorize(),
+    transform(),
+    winston.format.printf((info: any) => {
+      return `${new Date().toISOString()} [${info.level}] : ${info.stack || info.message}`;
+    }),
+    transformBack()
+  ),
 });
 
-export const expressLogger = expressPino({
-  logger,
-});
+logger.add(
+  new winston.transports.Console({
+    level: "debug",
+  })
+);
+
+export { logger };

@@ -15,17 +15,13 @@ class SseController {
    * @param {*} _next Callback argument to the middleware function
    */
   async onEvent(req: Request, res: Response, _next: NextFunction) {
-    try {
-      const { query = {} } = req;
-      const { messageId }: any = query;
+    const { query = {} } = req;
+    const { messageId }: any = query;
 
-      if (messageId && messageId.length) {
-        const configureSse = new ConfigureSse(req, res, messageId);
-        const initSSE = configureSse.initialize();
-        addSSEConnection(messageId, initSSE);
-      }
-    } catch (err) {
-      throw err;
+    if (messageId && messageId.length) {
+      const configureSse = new ConfigureSse(req, res, messageId);
+      const initSSE = configureSse.initialize();
+      addSSEConnection(messageId, initSSE);
     }
   }
 

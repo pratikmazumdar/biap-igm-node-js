@@ -1,3 +1,4 @@
+import { Context } from "../../interfaces/issue";
 import { protocolIssueStatus } from "../../utils/protocolApis";
 
 class BppIssueStatusService {
@@ -7,19 +8,15 @@ class BppIssueStatusService {
    * @param {Object} message
    
    */
-  async getIssueStatus(context: any, message: object = {}) {
-    try {
-      const issueStatusRequest = {
-        context: context,
-        message: message,
-      };
+  async getIssueStatus(context: Context, message: object = {}) {
+    const issueStatusRequest = {
+      context: context,
+      message: message,
+    };
 
-      const response = await protocolIssueStatus(issueStatusRequest);
+    const response = await protocolIssueStatus(issueStatusRequest);
 
-      return { context: context, message: response.message };
-    } catch (err) {
-      throw err;
-    }
+    return { context: context, message: response.message };
   }
 }
 

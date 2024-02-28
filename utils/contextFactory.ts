@@ -1,6 +1,6 @@
-import { v4 as uuidv4 } from "uuid";
-import { PROTOCOL_CONTEXT, PROTOCOL_VERSION } from "../shared/constants";
-import { CITY_CODE } from "../shared/cityCode";
+import { v4 as uuidv4 } from 'uuid';
+import { PROTOCOL_CONTEXT, PROTOCOL_VERSION } from '../shared/constants';
+import { CITY_CODE } from '../shared/cityCode';
 
 class ContextFactory {
   domain: string;
@@ -30,8 +30,8 @@ class ContextFactory {
     if (cityCode) {
       return cityCode;
     } else {
-      cityCode = process.env.CITY || "std:080";
-      let cityMapping = CITY_CODE.find((x: any) => {
+      cityCode = process.env.CITY || 'std:080';
+      const cityMapping = CITY_CODE.find((x: any) => {
         if (x.City === city && x.State === state) {
           return x;
         }
@@ -42,6 +42,7 @@ class ContextFactory {
           cityCode = cityMapping.Code;
         }
       }
+
       return cityCode;
     }
   }
@@ -72,7 +73,7 @@ class ContextFactory {
       message_id: messageId,
       timestamp: this.timestamp,
       ...(bppId && { bpp_id: bppId }),
-      ttl: "PT30S",
+      ttl: 'PT30S',
     };
   }
 }

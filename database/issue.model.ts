@@ -10,6 +10,7 @@ const personSchema = new mongoose.Schema(
 const contactSchema = new mongoose.Schema(
   {
     phone: Number,
+    email: String,
   },
   { _id: false }
 );
@@ -31,7 +32,7 @@ const IssueSchema = new mongoose.Schema(
     sub_category: { type: String },
     bppId: String,
     bpp_uri: String,
-    domain : String,
+    domain: String,
     complainant_info: { type: complaintInfoSchema },
     order_details: { type: Object },
     description: { type: Object },

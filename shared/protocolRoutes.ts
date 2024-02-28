@@ -4,7 +4,7 @@ const ON_ISSUE_STATUS = "protocol/response/v1/on_issue_status";
 const ISSUE = "protocol/issue";
 const ISSUE_STATUS = "protocol/issue_status";
 
-const RESPONSE = "protocol/response";
+const RESPONSE = "protocol/response/v1/on_issue";
 
 const PROTOCOL_API_URLS = {
   ISSUE,

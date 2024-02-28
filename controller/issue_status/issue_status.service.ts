@@ -8,7 +8,7 @@ import {
   getIssueByTransactionId,
 } from "../../utils/dbservice";
 import { IssueProps, RespondentActions } from "../../interfaces/issue";
-import BugzillaService from "../../controller/bugzilla/bugzilla.service";
+import BugzillaService from "../crm/crm.service";
 
 const bppIssueStatusService = new BppIssueStatusService();
 const bugzillaService = new BugzillaService();
@@ -32,94 +32,86 @@ class IssueStatusService {
    * @param {Object} order
    */
   async issue_status(order: any) {
-    try {
-      const { context: requestContext, message } = order;
+    const { context: requestContext, message } = order;
 
-      const issueDetails = await this.getIssueByIssueId(message?.issue_id);
+    const issueDetails = await this.getIssueByIssueId(message?.issue_id);
 
-      const contextFactory = new ContextFactory();
-      const context = contextFactory.create({
-        domain: requestContext?.domain,
-        action: PROTOCOL_CONTEXT.ISSUE_STATUS,
-        transactionId: requestContext?.transaction_id,
-        bppId: requestContext?.bpp_id,
-        bpp_uri: issueDetails?.[0]?.bpp_uri,
-        cityCode: issueDetails.city,
-      });
+    const contextFactory = new ContextFactory();
+    const context = contextFactory.create({
+      domain: requestContext?.domain,
+      action: PROTOCOL_CONTEXT.ISSUE_STATUS,
+      transactionId: requestContext?.transaction_id,
+      bppId: requestContext?.bpp_id,
+      bpp_uri: issueDetails?.[0]?.bpp_uri,
+      cityCode: issueDetails.city,
+    });
 
-      return await bppIssueStatusService.getIssueStatus(context, message);
-    } catch (err) {
-      throw err;
-    }
+    return await bppIssueStatusService.getIssueStatus(context, message);
   }
 
   /**
    * on support order
    * @param {Object} messageId
    */
-  async onIssueStatus(messageId: Object) {
-    try {
-      const protocolSupportResponse = await onIssue_status(messageId);
-      if (protocolSupportResponse && protocolSupportResponse.length) {
-        const respondent_actions =
-          protocolSupportResponse?.[0]?.message?.issue?.issue_actions
-            ?.respondent_actions;
+  async onIssueStatus(messageId: object) {
+    const protocolSupportResponse = await onIssue_status(messageId);
+    if (protocolSupportResponse && protocolSupportResponse.length) {
+      const respondent_actions =
+        protocolSupportResponse?.[0]?.message?.issue?.issue_actions
+          ?.respondent_actions;
 
-        const issue: IssueProps = await getIssueByTransactionId(
-          protocolSupportResponse?.[0]?.context?.transaction_id
-        );
+      const issue: IssueProps = await getIssueByTransactionId(
+        protocolSupportResponse?.[0]?.context?.transaction_id
+      );
 
-        const complainant_action = issue.issue_actions.complainant_actions;
-        respondent_actions?.map((item: RespondentActions) => {
-          if (item?.respondent_action === "RESOLVED") {
-            bugzillaService.updateIssueInBugzilla(
-              protocolSupportResponse?.[0]?.context?.transaction_id,
-              issue?.issue_actions,
-              true
-            );
-          }
-        });
-
-        issue?.issue_actions?.respondent_actions?.splice(
-          0,
-          issue?.issue_actions?.respondent_actions.length,
-          ...respondent_actions
-        );
-
-        issue["resolution_provider"] =
-          protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;
-        issue["resolution"] =
-          protocolSupportResponse?.[0]?.message?.issue?.resolution;
-
-        issue.issue_actions.complainant_actions = complainant_action;
-        await addOrUpdateIssueWithtransactionId(
-          protocolSupportResponse?.[0]?.context?.transaction_id,
-          issue
-        );
-
-        if (process.env.BUGZILLA_API_KEY || process.env.SELECTED_ISSUE_CRM) {
-          bugzillaService.updateIssueInBugzilla(
+      const complainant_action = issue.issue_actions.complainant_actions;
+      respondent_actions?.map((item: RespondentActions) => {
+        if (item?.respondent_action === "RESOLVED") {
+          bugzillaService.updateIssueInCRM(
             protocolSupportResponse?.[0]?.context?.transaction_id,
-            issue.issue_actions
+            issue?.issue_actions,
+            true
           );
         }
-        return protocolSupportResponse?.[0];
-      } else {
-        const contextFactory = new ContextFactory();
-        const context = contextFactory.create({
-          messageId: messageId,
-          action: PROTOCOL_CONTEXT.ON_ISSUE_STATUS,
-        });
+      });
 
-        return {
-          context,
-          error: {
-            message: "No data found",
-          },
-        };
+      issue?.issue_actions?.respondent_actions?.splice(
+        0,
+        issue?.issue_actions?.respondent_actions.length,
+        ...respondent_actions
+      );
+
+      issue["resolution_provider"] =
+        protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;
+      issue["resolution"] =
+        protocolSupportResponse?.[0]?.message?.issue?.resolution;
+
+      issue.issue_actions.complainant_actions = complainant_action;
+      await addOrUpdateIssueWithtransactionId(
+        protocolSupportResponse?.[0]?.context?.transaction_id,
+        issue
+      );
+
+      if (process.env.BUGZILLA_API_KEY || process.env.SELECTED_ISSUE_CRM) {
+        bugzillaService.updateIssueInCRM(
+          protocolSupportResponse?.[0]?.context?.transaction_id,
+          issue.issue_actions
+        );
       }
-    } catch (err) {
-      throw err;
+      return protocolSupportResponse?.[0];
+    } else {
+      const contextFactory = new ContextFactory();
+      const context = contextFactory.create({
+        messageId: messageId,
+        action: PROTOCOL_CONTEXT.ON_ISSUE_STATUS,
+      });
+
+      return {
+        context,
+        error: {
+          message: "No data found",
+        },
+      };
     }
   }
 }

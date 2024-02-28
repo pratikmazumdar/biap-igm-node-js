@@ -3,11 +3,11 @@
     /* Basic Options */
     "incremental": true,
     "target": "es6",
-    "module": "commonjs",
+    "module": "NodeNext",
     "outDir": "dist",
     "resolveJsonModule": true,
     "types": ["jest", "node"],
-    "skipLibCheck": true,
+
     /* Strict Type-Checking Options */
     "strict": true,
     "noImplicitAny": true,
@@ -25,7 +25,7 @@
     "noFallthroughCasesInSwitch": true,
 
     /* Module Resolution Options */
-    "moduleResolution": "node",
+    "moduleResolution": "nodenext",
     "baseUrl": ".",
     "esModuleInterop": true,
 
@@ -37,5 +37,7 @@
     "forceConsistentCasingInFileNames": true
   },
   "include": ["."],
+  "files": ["interfaces/custom.d.ts"],
   "exclude": ["tests"]
 }
+
