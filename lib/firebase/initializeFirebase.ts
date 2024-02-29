@@ -1,5 +1,5 @@
-import admin from "firebase-admin";
-import firebaseService from "../../config/dev/firebase-service-account.json";
+import admin from 'firebase-admin';
+import firebaseService from '../../config/dev/firebase-service-account.js';
 
 const firebaseAdminObject: any = firebaseService;
 

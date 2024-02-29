@@ -1,14 +1,11 @@
-import { onIssue_status } from "../../utils/protocolApis";
-import Issue from "../../database/issue.model";
-import { PROTOCOL_CONTEXT } from "../../shared/constants";
-import ContextFactory from "../../utils/contextFactory";
-import BppIssueStatusService from "./bpp.issue_status.service";
-import {
-  addOrUpdateIssueWithtransactionId,
-  getIssueByTransactionId,
-} from "../../utils/dbservice";
-import { IssueProps, RespondentActions } from "../../interfaces/issue";
-import BugzillaService from "../crm/crm.service";
+import { onIssue_status } from '../../utils/protocolApis.js';
+import Issue from '../../database/issue.model.js';
+import { PROTOCOL_CONTEXT } from '../../shared/constants.js';
+import ContextFactory from '../../utils/contextFactory.js';
+import BppIssueStatusService from './bpp.issue_status.service.js';
+import { addOrUpdateIssueWithtransactionId, getIssueByTransactionId } from '../../utils/dbservice.js';
+import { IssueProps, RespondentActions } from '../../interfaces/issue.js';
+import BugzillaService from '../crm/crm.service.js';
 
 const bppIssueStatusService = new BppIssueStatusService();
 const bugzillaService = new BugzillaService();
@@ -21,8 +18,8 @@ class IssueStatusService {
     if (!(issue || issue.length))
       return {
         status: 404,
-        name: "NO_RECORD_FOUND_ERROR",
-        message: "Record not found",
+        name: 'NO_RECORD_FOUND_ERROR',
+        message: 'Record not found',
       };
     else return issue;
   }
@@ -56,21 +53,17 @@ class IssueStatusService {
   async onIssueStatus(messageId: object) {
     const protocolSupportResponse = await onIssue_status(messageId);
     if (protocolSupportResponse && protocolSupportResponse.length) {
-      const respondent_actions =
-        protocolSupportResponse?.[0]?.message?.issue?.issue_actions
-          ?.respondent_actions;
+      const respondent_actions = protocolSupportResponse?.[0]?.message?.issue?.issue_actions?.respondent_actions;
 
-      const issue: IssueProps = await getIssueByTransactionId(
-        protocolSupportResponse?.[0]?.context?.transaction_id
-      );
+      const issue: IssueProps = await getIssueByTransactionId(protocolSupportResponse?.[0]?.context?.transaction_id);
 
       const complainant_action = issue.issue_actions.complainant_actions;
       respondent_actions?.map((item: RespondentActions) => {
-        if (item?.respondent_action === "RESOLVED") {
+        if (item?.respondent_action === 'RESOLVED') {
           bugzillaService.updateIssueInCRM(
             protocolSupportResponse?.[0]?.context?.transaction_id,
             issue?.issue_actions,
-            true
+            true,
           );
         }
       });
@@ -78,25 +71,17 @@ class IssueStatusService {
       issue?.issue_actions?.respondent_actions?.splice(
         0,
         issue?.issue_actions?.respondent_actions.length,
-        ...respondent_actions
+        ...respondent_actions,
       );
 
-      issue["resolution_provider"] =
-        protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;
-      issue["resolution"] =
-        protocolSupportResponse?.[0]?.message?.issue?.resolution;
+      issue['resolution_provider'] = protocolSupportResponse?.[0]?.message?.issue?.resolution_provider;
+      issue['resolution'] = protocolSupportResponse?.[0]?.message?.issue?.resolution;
 
       issue.issue_actions.complainant_actions = complainant_action;
-      await addOrUpdateIssueWithtransactionId(
-        protocolSupportResponse?.[0]?.context?.transaction_id,
-        issue
-      );
+      await addOrUpdateIssueWithtransactionId(protocolSupportResponse?.[0]?.context?.transaction_id, issue);
 
       if (process.env.BUGZILLA_API_KEY || process.env.SELECTED_ISSUE_CRM) {
-        bugzillaService.updateIssueInCRM(
-          protocolSupportResponse?.[0]?.context?.transaction_id,
-          issue.issue_actions
-        );
+        bugzillaService.updateIssueInCRM(protocolSupportResponse?.[0]?.context?.transaction_id, issue.issue_actions);
       }
       return protocolSupportResponse?.[0];
     } else {
@@ -109,7 +94,7 @@ class IssueStatusService {
       return {
         context,
         error: {
-          message: "No data found",
+          message: 'No data found',
         },
       };
     }

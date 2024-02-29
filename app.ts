@@ -1,12 +1,12 @@
 import express, { Application, NextFunction, Request, Response } from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
-import issueRoutes from './routes/issue';
-import issueStatusRoutes from './routes/issue_status';
-import sseRoutes from './routes/sse';
-import initializeFirebase from './lib/firebase/initializeFirebase';
-import { Exception, sanitize } from './utils/Exception';
-import { logger } from './shared/logger';
+import issueRoutes from './routes/issue/index.js';
+import issueStatusRoutes from './routes/issue_status/index.js';
+import sseRoutes from './routes/sse/index.js';
+import initializeFirebase from './lib/firebase/initializeFirebase.js';
+import { Exception, sanitize } from './utils/Exception.js';
+import { logger } from './shared/logger.js';
 
 const createServer = (): Application => {
   const app: Application = express();

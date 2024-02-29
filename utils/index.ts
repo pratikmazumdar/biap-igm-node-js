@@ -1,7 +1,6 @@
-import { v4 as uuidv4 } from 'uuid';
-import { Methods } from '../shared/constants';
-import getSignedUrlForUpload from './s3Util';
-import { Context, IssueProps } from '../interfaces/issue';
+import { Methods } from '../shared/constants.js';
+import getSignedUrlForUpload from './s3Util.js';
+import { Context, IssueProps } from '../interfaces/issue.js';
 
 export const getEnv = (name: string): string => {
   const val: string | undefined = process.env[name];
@@ -48,7 +47,7 @@ export async function uploadImage(base64: string) {
 
     const blob = b64toBlob(base64.split(';base64').pop() as string);
     const resp = await getSignedUrlForUpload({
-      path: uuidv4(),
+      path: crypto.randomUUID(),
       filetype: 'png',
     });
 

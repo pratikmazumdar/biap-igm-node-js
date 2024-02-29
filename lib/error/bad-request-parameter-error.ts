@@ -1,4 +1,4 @@
-import ERRORS from "./errors";
+import ERRORS from './errors.js';
 
 class BadRequestParameterError extends Error {
   status: number;

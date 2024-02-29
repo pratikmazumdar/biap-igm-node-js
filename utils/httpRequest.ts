@@ -1,6 +1,6 @@
 import axios, { AxiosResponse, AxiosRequestConfig } from 'axios';
-import { logger } from '../shared/logger';
-import { Methods } from '../shared/constants';
+import { logger } from '../shared/logger.js';
+import { Methods } from '../shared/constants.js';
 
 class HttpRequest {
   params: AxiosRequestConfig<any>;

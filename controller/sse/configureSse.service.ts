@@ -1,5 +1,5 @@
-import _ from "lodash";
-import SseEvent from "./sseEvent.service";
+import _ from 'lodash';
+import SseEvent from './sseEvent.service.js';
 
 class ConfigureSSE {
   req: any;
@@ -7,13 +7,7 @@ class ConfigureSSE {
   messageId: any;
   message: any;
   action: boolean;
-  constructor(
-    req: any,
-    res: any,
-    messageId: any,
-    action?: boolean,
-    message?: any
-  ) {
+  constructor(req: any, res: any, messageId: any, action?: boolean, message?: any) {
     this.req = req;
     this.res = res;
     this.messageId = messageId;
@@ -23,8 +17,7 @@ class ConfigureSSE {
 
   initialize() {
     try {
-      let message: Map<any, any> | Set<any> | _.List<any> | null | undefined =
-        [];
+      let message: Map<any, any> | Set<any> | _.List<any> | null | undefined = [];
 
       if (this.message && !_.isEmpty(message)) message = this.message;
 

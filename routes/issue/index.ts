@@ -1,8 +1,8 @@
 import express from 'express';
-// import { authentication } from "../../middleware";
-import IssueController from '../../controller/issue/issue.controller';
-import { UserDetails } from '../../interfaces/issue';
-import wrap from '../../shared/async-handler';
+// import { authentication } from "../../middleware/index.js";
+import IssueController from '../../controller/issue/issue.controller.js';
+import { UserDetails } from '../../interfaces/issue.js';
+import wrap from '../../shared/async-handler.js';
 
 const router: express.Router = express.Router();
 

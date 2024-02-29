@@ -1,9 +1,10 @@
-import { addSSEConnection } from "../../utils/sse";
-import { Response, Request, NextFunction } from "express";
-import SseProtocol from "./sseProtocol.service";
-import ConfigureSse from "./configureSse.service";
-import IssueStatusService from "../../controller/issue_status/issue_status.service";
-import { logger } from "../../shared/logger";
+import { Response, Request, NextFunction } from 'express';
+
+import { addSSEConnection } from '../../utils/sse.js';
+import SseProtocol from './sseProtocol.service.js';
+import ConfigureSse from './configureSse.service.js';
+import IssueStatusService from '../../controller/issue_status/issue_status.service.js';
+import { logger } from '../../shared/logger.js';
 
 const sseProtocolService = new SseProtocol();
 const issueStatusService = new IssueStatusService();
@@ -57,10 +58,10 @@ class SseController {
     issueStatusService
       .onIssueStatus(messageId)
       .then(() => {
-        logger.info("Updated Issue in Unsolicited Calls");
+        logger.info('Updated Issue in Unsolicited Calls');
       })
       .catch((err) => {
-        logger.info("Error in Unsolicited calls", JSON.stringify(err));
+        logger.info('Error in Unsolicited calls', JSON.stringify(err));
       });
 
     sseProtocolService

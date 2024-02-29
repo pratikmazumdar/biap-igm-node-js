@@ -1,5 +1,5 @@
-import { Context } from "../../interfaces/issue";
-import { protocolIssueStatus } from "../../utils/protocolApis";
+import { Context } from '../../interfaces/issue.js';
+import { protocolIssueStatus } from '../../utils/protocolApis.js';
 
 class BppIssueStatusService {
   /**

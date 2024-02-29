@@ -9,7 +9,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
-  plugins: ['@typescript-eslint', 'prettier'],
+  plugins: ['@typescript-eslint', 'prettier', 'sort-imports-es6-autofix'],
   extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
   rules: {
     'node/no-unsupported-features/es-syntax': 'off',

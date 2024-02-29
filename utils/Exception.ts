@@ -1,5 +1,5 @@
 import { MongooseError } from 'mongoose';
-import locals from '../shared/locals';
+import locals from '../shared/locals.js';
 import { AxiosError } from 'axios';
 
 export class Exception extends Error {

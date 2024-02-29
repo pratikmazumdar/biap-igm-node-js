@@ -1,6 +1,6 @@
 import { Response, NextFunction } from 'express';
 import { Request } from 'interfaces/custom';
-import validateToken from '../lib/firebase/validateToken';
+import validateToken from '../lib/firebase/validateToken.js';
 import { DecodedIdToken } from 'firebase-admin/auth';
 
 const authentication = () => (req: Request, res: Response, next: NextFunction) => {

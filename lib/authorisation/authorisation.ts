@@ -1,5 +1,5 @@
-import _ from "lodash";
-import { UnauthorisedError } from "../error";
+import _ from 'lodash';
+import { UnauthorisedError } from '../error/index.js';
 
 class Authorisation {
   user: any;

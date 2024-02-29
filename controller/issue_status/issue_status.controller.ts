@@ -1,6 +1,6 @@
-import { Response, NextFunction, Request } from "express";
-import BadRequestParameterError from "../../lib/error/bad-request-parameter-error";
-import IssueStatusService from "./issue_status.service";
+import { Response, NextFunction, Request } from 'express';
+import BadRequestParameterError from '../../lib/error/bad-request-parameter-error.js';
+import IssueStatusService from './issue_status.service.js';
 
 const issueStatusService = new IssueStatusService();
 
@@ -43,7 +43,7 @@ class IssueStatusController {
         .catch((err: any) => {
           next(err);
         });
-    else throw new BadRequestParameterError("message Id is mandatory");
+    else throw new BadRequestParameterError('message Id is mandatory');
   }
 }
 

@@ -1,8 +1,8 @@
-import express from 'express';
-import { authentication } from '../../middleware';
-import IssueStatusController from '../../controller/issue_status/issue_status.controller';
+import { Router } from 'express';
+import { authentication } from '../../middleware/index.js';
+import IssueStatusController from '../../controller/issue_status/issue_status.controller.js';
 
-const router: express.Router = express.Router();
+const router: Router = Router();
 
 const issueStatusController = new IssueStatusController();
 

@@ -1,8 +1,8 @@
-import express from 'express';
-import { authentication } from '../../middleware';
-import SseController from '../../controller/sse/sse.controller';
+import { Router } from 'express';
+import { authentication } from '../../middleware/index.js';
+import SseController from '../../controller/sse/sse.controller.js';
 
-const router = express.Router();
+const router: Router = Router();
 const sseController = new SseController();
 
 router.get('/events', authentication, sseController.onEvent);

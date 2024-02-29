@@ -1,8 +1,8 @@
-import HttpRequest from './httpRequest';
-import PROTOCOL_API_URLS from '../shared/protocolRoutes';
-import { IssueRequest } from '../interfaces/bpp_issue';
-import { getEnv } from '../utils';
-import { Methods } from '../shared/constants';
+import HttpRequest from './httpRequest.js';
+import PROTOCOL_API_URLS from '../shared/protocolRoutes.js';
+import { IssueRequest } from '../interfaces/bpp_issue.js';
+import { getEnv } from '../utils/index.js';
+import { Methods } from '../shared/constants.js';
 
 /**
  * on Issue

@@ -1,9 +1,5 @@
-import IssueModel from '../database/issue.model';
+import IssueModel from '../database/issue.model.js';
 
-/**
- * @param {String} transactionId
- * @param {Object} issueSchema
- */
 const addOrUpdateIssueWithtransactionId = async (
   transactionId: string | undefined,
   issueSchema: Record<any, any> = {},

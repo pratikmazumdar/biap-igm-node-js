@@ -1,18 +1,18 @@
-import { PROTOCOL_CONTEXT } from 'shared/constants';
-import ContextFactory from 'utils/contextFactory';
-import BppIssueService from './bpp.issue.service';
-import Issue from 'database/issue.model';
-import { logger } from 'shared/logger';
-import { transform } from 'utils';
-
-import * as bap from 'interfaces/issue';
-import BugzillaService from '../crm/crm.service';
-import { onIssueOrder } from 'utils/protocolApis';
-import { addOrUpdateIssueWithtransactionId, getIssueByTransactionId } from 'utils/dbservice';
-import * as bpp from 'interfaces/bpp_issue';
-import { getEnv } from 'utils';
 import util from 'util';
 import { UUID, randomUUID } from 'crypto';
+
+import { PROTOCOL_CONTEXT } from '../../shared/constants.js';
+import ContextFactory from '../../utils/contextFactory.js';
+import BppIssueService from './bpp.issue.service.js';
+import Issue from '../../database/issue.model.js';
+import { logger } from '../../shared/logger.js';
+import { transform } from '../../utils/index.js';
+import * as bap from '../../interfaces/issue.js';
+import BugzillaService from '../crm/crm.service.js';
+import { onIssueOrder } from '../../utils/protocolApis.js';
+import { addOrUpdateIssueWithtransactionId, getIssueByTransactionId } from '../../utils/dbservice.js';
+import * as bpp from '../../interfaces/bpp_issue.js';
+import { getEnv } from '../../utils/index.js';
 
 const bppIssueService = new BppIssueService();
 const bugzillaService = new BugzillaService();

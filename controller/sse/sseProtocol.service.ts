@@ -1,5 +1,5 @@
-import { PROTOCOL_CONTEXT } from "../../shared/constants";
-import { sendSSEResponse } from "../../utils/sse";
+import { PROTOCOL_CONTEXT } from '../../shared/constants.js';
+import { sendSSEResponse } from '../../utils/sse.js';
 
 class SseProtocol {
   async onIssue(response: any) {
@@ -10,7 +10,7 @@ class SseProtocol {
     return {
       message: {
         ack: {
-          status: "ACK",
+          status: 'ACK',
         },
       },
     };
@@ -29,7 +29,7 @@ class SseProtocol {
       return {
         message: {
           ack: {
-            status: "ACK",
+            status: 'ACK',
           },
         },
       };

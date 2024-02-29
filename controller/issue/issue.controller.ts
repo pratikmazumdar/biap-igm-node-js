@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { Request } from 'interfaces/custom';
-import IssueService from './issue.service';
-import { IParamProps, UserDetails } from 'interfaces/issue';
+import IssueService from './issue.service.js';
+import { IParamProps, UserDetails } from 'interfaces/issue.js';
 
 const issueService = new IssueService();
 class IssueController {

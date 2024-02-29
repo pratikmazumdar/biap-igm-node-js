@@ -1,8 +1,8 @@
-import { protocolIssue } from '../../utils/protocolApis';
-import { PROTOCOL_CONTEXT } from '../../shared/constants';
-import { Fulfillment, IssueProps, Item } from '../../interfaces/issue';
-import { Context, IssueRequest, Response } from '../../interfaces/bpp_issue';
-import { getEnv } from '../../utils';
+import { protocolIssue } from '../../utils/protocolApis.js';
+import { PROTOCOL_CONTEXT } from '../../shared/constants.js';
+import { Fulfillment, IssueProps, Item } from '../../interfaces/issue.js';
+import { Context, IssueRequest, Response } from '../../interfaces/bpp_issue.js';
+import { getEnv } from '../../utils/index.js';
 class BppIssueService {
   /**
    * bpp issue

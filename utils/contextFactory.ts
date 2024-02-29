@@ -1,6 +1,5 @@
-import { v4 as uuidv4 } from 'uuid';
-import { PROTOCOL_CONTEXT, PROTOCOL_VERSION } from '../shared/constants';
-import { CITY_CODE } from '../shared/cityCode';
+import { PROTOCOL_CONTEXT, PROTOCOL_VERSION } from '../shared/constants.js';
+import { CITY_CODE } from '../shared/cityCode.js';
 
 class ContextFactory {
   domain: string;
@@ -51,7 +50,7 @@ class ContextFactory {
     const {
       domain,
       transactionId, //FIXME: if ! found in args then create new
-      messageId = uuidv4(),
+      messageId = crypto.randomUUID(),
       action = PROTOCOL_CONTEXT.ISSUE,
       bppId,
       city,
@@ -69,7 +68,7 @@ class ContextFactory {
       bap_id: this.bapId,
       bap_uri: this.bapUrl,
       bpp_uri: bpp_uri,
-      transaction_id: transactionId || uuidv4(),
+      transaction_id: transactionId || crypto.randomUUID(),
       message_id: messageId,
       timestamp: this.timestamp,
       ...(bppId && { bpp_id: bppId }),

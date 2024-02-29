@@ -2,9 +2,9 @@ import { connect } from 'mongoose';
 import 'dotenv/config';
 import { Application } from 'express';
 
-import { logger } from './shared/logger';
-import createServer from './app';
-import { getEnv } from './utils';
+import { logger } from './shared/logger.js';
+import createServer from './app.js';
+import { getEnv } from './utils/index.js';
 
 const port: number = Number(process.env.PORT) || 6969;
 

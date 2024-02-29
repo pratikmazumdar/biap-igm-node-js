@@ -1,4 +1,4 @@
-import ERRORS from "./errors";
+import ERRORS from './errors.js';
 
 class UnauthorisedError extends Error {
   status: number;

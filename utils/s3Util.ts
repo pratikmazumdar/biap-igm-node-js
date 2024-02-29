@@ -1,6 +1,5 @@
 import AWS from 'aws-sdk';
-import { logger } from '../shared/logger';
-import { v4 as uuidv4 } from 'uuid';
+import { logger } from '../shared/logger.js';
 
 async function getSignedUrlForUpload(data: any): Promise<any> {
   const version = process.env.S3_VERSION;
@@ -27,7 +26,7 @@ async function getSignedUrlForUpload(data: any): Promise<any> {
   logger.info('data------>', data);
   //TODO: Use Axios to send http request
   try {
-    const myKey = data.path + '/' + uuidv4() + data.fileType.replace(/^\.?/, '.');
+    const myKey = data.path + '/' + crypto.randomUUID() + data.fileType.replace(/^\.?/, '.');
     const params = {
       Bucket: myBucket,
       Key: myKey,
